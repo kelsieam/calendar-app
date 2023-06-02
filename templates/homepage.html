@@ -6,28 +6,7 @@
   <script src='https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js'></script>
   <script src='https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js'></script>
   <script src='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js'></script>
-  <script>
-    $(document).ready(function() {
-      $('#calendar').fullCalendar({
-        events: [
-          {
-            title: 'Event 1',
-            start: '2023-06-01'
-          },
-          {
-            title: 'Event 2',
-            start: '2023-06-03',
-            end: '2023-06-05'
-          },
-          {
-            title: 'Event 3',
-            start: '2023-06-07T12:00:00'
-          }
-          // Add more events here
-        ]
-      });
-    });
-  </script>
+  <script src='/static/js/show-info.js'></script>
   <style>
     #calendar {
       max-width: 900px;
