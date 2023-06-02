@@ -1,8 +1,14 @@
 [
     {
-        "parent_start": "True",
+        "parent_start": true,
         "start": "2023-05-05 15:00:00",
         "end": "2023-05-12 15:00:00",
-        "cycle_duration": 7
+        "cycle_duration": 14
+    },
+    {
+        "parent_start": true,
+        "start": "2023-05-12 15:00:00",
+        "end": null,
+        "cycle_duration": 14
     }
 ]

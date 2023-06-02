@@ -4,8 +4,7 @@
         "end": "2023-06-27 17:00:00",
         "label": "soccer game",
         "description": "against blah blah bring cleats and wear clean underwear or something",
-        "shared": "True",
-        "change_def_sched": "False",
+        "shared": true,
         "with_parent": 5
     },
     {
@@ -13,45 +12,24 @@
         "end": "2023-07-17 21:00:00",
         "label": "movie night",
         "description": "with blah blah friends winnie signed up to bring blah blah blah make sure she has blah",
-        "shared": "False",
-        "change_def_sched": "False"
+        "shared": false,
+        "with_parent": 1
     },
     {
-        "start": "2023-12-23 15:00:00",
-        "end": "2023-12-25 15:00:00",
-        "label": "Christmas",
-        "description": "In 2023 and subsequent odd-numbered years, Mother will have parenting time from 3:00 p.m. on December 23rd until 3:00 p.m. on Christmas Day; Father then will have parenting time until 3:00 p.m. on December 27th. Parents will celebrate jointly by arrangement.",
-        "shared": "True",
-        "change_def_sched": "False",
-        "with_parent": 3
+        "start": "2023-07-18 11:00:00",
+        "end": "2023-07-18 14:00:00",
+        "label": "park playdate",
+        "description": "lots of details here for fun exciting times",
+        "shared": false,
+        "with_parent": 1
     },
     {
-        "start": "2023-12-25 15:00:00",
-        "end": "2023-12-27 15:00:00",
-        "label": "Christmas",
-        "description": "In 2023 and subsequent odd-numbered years, Mother will have parenting time from 3:00 p.m. on December 23rd until 3:00 p.m. on Christmas Day; Father then will have parenting time until 3:00 p.m. on December 27th. Parents will celebrate jointly by arrangement.",
-        "shared": "True",
-        "change_def_sched": "False",
-        "with_parent": 4
-    },
-    {
-        "start": "2023-06-17 20:00:00",
-        "end": "2023-06-18 15:00:00",
-        "label": "Father's Day",
-        "description": "Children will spend Mother’s/Father’s Day (Sunday) with the celebrating parent. On non-resident days, parenting time will begin after dinner the previous day (Saturday) and will end at 3:00 p.m. on Mother’s/Father’s Day.",
-        "shared": "True",
-        "change_def_sched": "False",
-        "with_parent": 4       
-    },
-    {
-        "start": "2024-03-25 09:00:00",
-        "end": "2024-04-01 09:00:00",
-        "label": "Spring Break",
-        "description": "Parents will alternate the entire five-day Spring Break and the weekend following Spring Break, beginning at 9:00 a.m. on the first day (Monday) of Spring Break and ending at the recommencement of school on the Monday after Spring Break. In 2023 and subsequent odd-numbered years, Mother will have parenting time; in even-numbered years, Father will have parenting time.",
-        "shared": "True",
-        "change_def_sched": "True",
-        "with_parent": 4
+        "start": "2023-07-19 18:00:00",
+        "end": "2023-07-20 09:00:00",
+        "label": "sleepover",
+        "description": "sleepover with dad or something",
+        "shared": false,
+        "with_parent": 2
     }
-
-
+    
 ]
