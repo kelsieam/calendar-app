@@ -5,6 +5,7 @@ from model import connect_to_db, db
 from flask_sqlalchemy import SQLAlchemy
 import crud
 from model import Event, Holiday, DefaultSchedule 
+import psycopg2
 
 from jinja2 import StrictUndefined
 
@@ -20,6 +21,12 @@ def homepage():
     """View homepage."""
 
     return render_template('homepage.html')
+
+@app.route('/calendar')
+def calendar():
+    """view calendar page"""
+
+    return render_template('calendar.html')
 
 @app.route('/api/sampledata')
 def sampledata():

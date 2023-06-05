@@ -1,20 +1,150 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset='utf-8' />
-  <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.css' />
-  <script src='https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js'></script>
-  <script src='https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js'></script>
-  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js'></script>
-  <script src='/static/js/show-info.js'></script>
-  <style>
-    #calendar {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-  </style>
-</head>
-<body>
-  <div id='calendar'></div>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Let's see if this works{% endblock %}
+{% block head %}
+<link rel="stylesheet" href='/static/css/style.css' />
+<script src='/static/js/get-info.js'></script>
+{% endblock %}
+{% block body %}
+
+<p>idk here's some events i guess</p>
+<p>lol just kidding there are no events learn how to use javascript</p>
+<h2>Events</h2>
+<form>
+<label for="event-start">When does this event start?</label>
+<br>
+<input type="datetime-local" id="event-start"
+       name="event-start"
+       min="2023-06-07T00:00" max="2026-06-14T00:00">
+<br>
+<br>
+    <label for="event-end">When does this event end?</label>
+<br>
+    <input type="datetime-local" id="event-end"
+           name="event-end"
+           min="2023-06-07T00:00" max="2026-06-14T00:00">
+<br>
+<br>
+    <label for="event-label">Enter a name for this event:</label>
+<br>    
+    <input type="text" id="event-label" maxlength="30">
+<br>
+<br>
+    <label for="event-description">Enter a description for this event:</label>
+<br>    
+    <input type="text" id="event-description">
+<br>
+<br>
+    <label for="event-shared">Should this event be shared with the other parent's calendar?</label>
+<br> 
+    <input type="radio" id="yes" name="event-shared" value="yes">
+    <label for="yes">Yes</label>
+    <input type="radio" id="no" name="event-shared" value="no">
+    <label for="no">No</label>
+<br>
+<br>
+<label for="event-with-parent">Which parent is attending this event?</label>
+<br> 
+    <input type="radio" id="parent-a" name="event-with-parent" value="parent-a">
+    <label for="parent-a">Parent A this should be like user_name but we'll get there</label>
+    <input type="radio" id="parent-b" name="event-with-parent" value="parent-b">
+    <label for="parent-b">Parent B</label>
+    <input type="radio" id="both-parents" name="event-with-parent" value="both-parents">
+    <label for="both-parents">Both Parents</label>
+    <input type="radio" id="neither-parent" name="event-with-parent" value="neither-parent">
+    <label for="neither-parent">Neither Parent</label>
+<br>
+<br>
+    <input type="submit">
+</form> 
+
+<h2>Holidays</h2>
+<form>
+    <label for="holiday-start">When does this holiday start?</label>
+    <br>
+    <input type="datetime-local" id="holiday-start"
+           name="holiday-start"
+           min="2023-06-07T00:00" max="2026-06-14T00:00">
+    <br>
+    <br>
+        <label for="holiday-end">When does this holiday end?</label>
+    <br>
+        <input type="datetime-local" id="holiday-end"
+               name="holiday-end"
+               min="2023-06-07T00:00" max="2026-06-14T00:00">
+    <br>
+    <br>
+        <label for="holiday-label">Enter a name for this holiday:</label>
+    <br>    
+        <input type="text" id="holiday-label">
+    <br>
+    <br>
+        <label for="holiday-description">Enter a description for this holiday:</label>
+    <br>    
+        <input type="text">
+    <br>
+    <br>
+    <label for="holiday-with-parent">Which parent has parenting time for this holiday?</label>
+    <br>
+        <input type="radio" id="parent-a-holiday" name="holiday-with-parent" value="parent-a-holiday">
+        <label for="parent-a-holiday">Parent A</label>
+        <input type="radio" id="parent-b-holiday" name="holiday-with-parent" value="parent-b-holiday">
+        <label for="parent-b-holiday">Parent B</label>
+        <input type="radio" id="current-parent" name="holiday-with-parent" value="current-parent">
+        <label for="current-parent">Current Parent</label>
+        <input type="radio" id="non-current-parent" name="holiday-with-parent" value="non-current-parent">
+        <label for="non-current-parent">Non-current Parent</label>
+        <input type="radio" id="both-parents-holiday" name="holiday-with-parent" value="both-parents-holiday">
+        <label for="both-parents-holiday">Both Parents</label>
+    <br>
+    <br>
+    <label for="change-default-schedule">Does this holiday change the default parenting schedule?</label>
+    <br> 
+        <input type="radio" id="yes" name="change-default-schedule" value="yes">
+        <label for="yes">Yes -if yes need to make a new default schedule</label>
+        <input type="radio" id="no" name="change-default-schedule" value="no">
+        <label for="no">No</label>
+    <br>
+    <br>
+        <input type="submit">
+    </form> 
+    <h2>Parenting Schedule</h2>
+    <form>
+            <label for="default-schedule-parent">Which parent has parenting time the first part of this schedule?</label>
+        <br>
+            <input type="radio" id="parent-a-start" name="default-schedule-parent" value="parent-a-start">
+            <label for="parent-a-start">Parent A</label>
+            <input type="radio" id="parent-b-start" name="default-schedule-parent" value="parent-b-start">
+            <label for="parent-b-start">Parent B</label>
+        <br>
+        <br>
+            <label for="default-schedule-start">When does this schedule start?</label>
+        <br>
+            <input type="datetime-local" id="default-schedule-start"
+                   name="default-schedule-start"
+                   min="2023-06-07T00:00" max="2026-06-14T00:00">
+
+        <br>
+            <input type="submit">
+        
+    </form>
+    <br>
+    <br>
+    <br>
+
+
+
+
+
+
+
+
+<!-- <button id="event-button">events</button>
+<button id="holiday-button">holidays</button>
+<button id="default-schedule-button">default schedules</button>
+<ul id="event-list"></ul>
+<ul id="holiday-list"></ul>
+<ul id="default-schedule-list"></ul> -->
+<div id="details-here"></div>
+
+
+{% endblock %}
