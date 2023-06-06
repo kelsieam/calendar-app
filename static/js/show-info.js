@@ -49,8 +49,6 @@ fetch('/api/sampledata')
               const startDateCopy = new Date(startDate);
               const endDate = new Date(startDateCopy);
               endDate.setDate(startDateCopy.getDate() + 730);
-              // console.log(endDate);
-              // console.log(endDate);
               let loop = new Date(startDate);
               // let loopCounter = 0;
               while (loop <= endDate) {
@@ -105,6 +103,20 @@ fetch('/api/sampledata')
                       holidayDict[dailyStartDateCopy].with_parent === 4) {
                         // draw schedule for other parent
                     }
+                    else if (dailyStartDateCopy in holidayDict && 
+                      holidayDict[dailyStartDateCopy].with_parent === 3) {
+                        const loopCopy = new Date(loop);
+                        const newDate = new Date(loop);
+                        newDate.setDate(loop.getDate() + 1);
+                        const newDefaultSchedule = {
+                            groupId: 'defaultSchedule',
+                            title: 'parenting time',
+                            start: loopCopy,
+                            end: newDate,
+                            allDay: true
+                        };
+                        defaultSchedules.push(newDefaultSchedule);
+                      }
                     else if (dayCounter < schedule.cycle_duration) {
                       
                         const loopCopy = new Date(loop);
@@ -131,7 +143,7 @@ fetch('/api/sampledata')
         //Build a dictionary: {'2023-05-30': event}
 
 
-     
+
 
       $('#calendar').fullCalendar({
         editable: false,
@@ -165,7 +177,7 @@ fetch('/api/sampledata')
         }
         ]
       });
-      // });
+      
 
 
     });

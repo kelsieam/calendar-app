@@ -43,5 +43,14 @@
         "shared": true,
         "change_def_sched": false,
         "with_parent": 4
+    },
+    {
+        "start": "2023-06-20 09:00:00",
+        "end": "2023-06-20 21:00:00",
+        "label": "other made up holiday",
+        "description": "super important",
+        "shared": true,
+        "change_def_sched": false,
+        "with_parent": 3
     }
 ]

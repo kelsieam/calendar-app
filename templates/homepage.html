@@ -9,7 +9,7 @@
 <p>idk here's some events i guess</p>
 <p>lol just kidding there are no events learn how to use javascript</p>
 <h2>Events</h2>
-<form>
+<form action='/create-event' method='POST' id="events">
 <label for="event-start">When does this event start?</label>
 <br>
 <input type="datetime-local" id="event-start"
@@ -26,19 +26,19 @@
 <br>
     <label for="event-label">Enter a name for this event:</label>
 <br>    
-    <input type="text" id="event-label" maxlength="30">
+    <input type="text" id="event-label" name="event-label">
 <br>
 <br>
     <label for="event-description">Enter a description for this event:</label>
 <br>    
-    <input type="text" id="event-description">
+    <input type="text" id="event-description" name="event-description">
 <br>
 <br>
     <label for="event-shared">Should this event be shared with the other parent's calendar?</label>
 <br> 
-    <input type="radio" id="yes" name="event-shared" value="yes">
+    <input type="radio" id="true" name="event-shared" value="true">
     <label for="yes">Yes</label>
-    <input type="radio" id="no" name="event-shared" value="no">
+    <input type="radio" id="no" name="event-shared" value="false">
     <label for="no">No</label>
 <br>
 <br>
@@ -58,7 +58,7 @@
 </form> 
 
 <h2>Holidays</h2>
-<form>
+<form action='/create-holiday' method='POST' id="holidays">
     <label for="holiday-start">When does this holiday start?</label>
     <br>
     <input type="datetime-local" id="holiday-start"
@@ -75,40 +75,40 @@
     <br>
         <label for="holiday-label">Enter a name for this holiday:</label>
     <br>    
-        <input type="text" id="holiday-label">
+        <input type="text" id="holiday-label" name="holiday-label">
     <br>
     <br>
         <label for="holiday-description">Enter a description for this holiday:</label>
     <br>    
-        <input type="text">
+        <input type="text" id="holiday-description" name="holiday-description">
     <br>
     <br>
     <label for="holiday-with-parent">Which parent has parenting time for this holiday?</label>
     <br>
-        <input type="radio" id="parent-a-holiday" name="holiday-with-parent" value="parent-a-holiday">
+        <input type="radio" id="parent-a-holiday" name="holiday-with-parent" value="parent-a">
         <label for="parent-a-holiday">Parent A</label>
-        <input type="radio" id="parent-b-holiday" name="holiday-with-parent" value="parent-b-holiday">
+        <input type="radio" id="parent-b-holiday" name="holiday-with-parent" value="parent-b">
         <label for="parent-b-holiday">Parent B</label>
         <input type="radio" id="current-parent" name="holiday-with-parent" value="current-parent">
         <label for="current-parent">Current Parent</label>
         <input type="radio" id="non-current-parent" name="holiday-with-parent" value="non-current-parent">
         <label for="non-current-parent">Non-current Parent</label>
-        <input type="radio" id="both-parents-holiday" name="holiday-with-parent" value="both-parents-holiday">
+        <input type="radio" id="both-parents-holiday" name="holiday-with-parent" value="both-parents">
         <label for="both-parents-holiday">Both Parents</label>
     <br>
     <br>
     <label for="change-default-schedule">Does this holiday change the default parenting schedule?</label>
     <br> 
-        <input type="radio" id="yes" name="change-default-schedule" value="yes">
+        <input type="radio" id="yes" name="change-default-schedule" value="true">
         <label for="yes">Yes -if yes need to make a new default schedule</label>
-        <input type="radio" id="no" name="change-default-schedule" value="no">
+        <input type="radio" id="no" name="change-default-schedule" value="false">
         <label for="no">No</label>
     <br>
     <br>
         <input type="submit">
     </form> 
     <h2>Parenting Schedule</h2>
-    <form>
+    <form id="default-schedules">
             <label for="default-schedule-parent">Which parent has parenting time the first part of this schedule?</label>
         <br>
             <input type="radio" id="parent-a-start" name="default-schedule-parent" value="parent-a-start">
