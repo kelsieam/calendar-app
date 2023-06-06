@@ -54,7 +54,7 @@ class Event(db.Model):
     description = db.Column(db.String)
     shared = db.Column(db.Boolean, default=False)
     with_parent = db.Column(db.Integer) 
-    ## 1 = curr parent, 2 = non curr parent 3 = parent a, 4 = parent b,  5 = both(event etc)
+    ## 1 = curr parent, 2 = non curr parent 3 = parent a, 4 = parent b, 5 = both(event etc)
 
 
     def __repr__(self):

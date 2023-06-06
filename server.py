@@ -34,7 +34,6 @@ def sampledata():
     events = Event.query.all()
     for event in events:
         all_events.append(event.as_dict())
-
     all_holidays = []
     holidays = Holiday.query.all()
     for holiday in holidays:
