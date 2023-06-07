@@ -1,8 +1,11 @@
+
+
+
+
 {% extends 'base.html' %}
 {% block title %}Let's see if this works{% endblock %}
 {% block head %}
 <link rel="stylesheet" href='/static/css/style.css' />
-<script src='/static/js/get-info.js'></script>
 {% endblock %}
 {% block body %}
 
@@ -36,9 +39,9 @@
 <br>
     <label for="event-shared">Should this event be shared with the other parent's calendar?</label>
 <br> 
-    <input type="radio" id="true" name="event-shared" value="true">
+    <input type="radio" id="event-shared-yes" name="event-shared" value="true">
     <label for="yes">Yes</label>
-    <input type="radio" id="no" name="event-shared" value="false">
+    <input type="radio" id="event-shared-no" name="event-shared" value="false">
     <label for="no">No</label>
 <br>
 <br>
@@ -55,7 +58,7 @@
 <br>
 <br>
     <input type="submit">
-</form> 
+</form>
 
 <h2>Holidays</h2>
 <form action='/create-holiday' method='POST' id="holidays">
@@ -100,51 +103,34 @@
     <label for="change-default-schedule">Does this holiday change the default parenting schedule?</label>
     <br> 
         <input type="radio" id="yes" name="change-default-schedule" value="true">
-        <label for="yes">Yes -if yes need to make a new default schedule</label>
+        <label for="yes">Yes - if yes need to make a new default schedule</label>
         <input type="radio" id="no" name="change-default-schedule" value="false">
         <label for="no">No</label>
     <br>
     <br>
+    <section id="change-default-schedule" style="display: none;">
+    <h2>Change Default Schedule</h2>
+    <label for="default-schedule-parent">Which parent has parenting time the first part of this schedule?</label>
+    <br>
+        <input type="radio" id="parent-a-start" name="default-schedule-parent" value="parent-a-start">
+        <label for="parent-a-start">Parent A</label>
+        <input type="radio" id="parent-b-start" name="default-schedule-parent" value="parent-b-start">
+        <label for="parent-b-start">Parent B</label>
+    <br>
+    <br>
+        <label for="default-schedule-start">When does this schedule start?</label>
+    <br>
+        <input type="datetime-local" id="default-schedule-start"
+               name="default-schedule-start"
+               min="2023-06-07T00:00" max="2026-06-14T00:00">
+
+    <br>
+    </section>
+    
         <input type="submit">
     </form> 
-    <h2>Parenting Schedule</h2>
-    <form id="default-schedules">
-            <label for="default-schedule-parent">Which parent has parenting time the first part of this schedule?</label>
-        <br>
-            <input type="radio" id="parent-a-start" name="default-schedule-parent" value="parent-a-start">
-            <label for="parent-a-start">Parent A</label>
-            <input type="radio" id="parent-b-start" name="default-schedule-parent" value="parent-b-start">
-            <label for="parent-b-start">Parent B</label>
-        <br>
-        <br>
-            <label for="default-schedule-start">When does this schedule start?</label>
-        <br>
-            <input type="datetime-local" id="default-schedule-start"
-                   name="default-schedule-start"
-                   min="2023-06-07T00:00" max="2026-06-14T00:00">
 
-        <br>
-            <input type="submit">
-        
-    </form>
-    <br>
-    <br>
-    <br>
-
-
-
-
-
-
-
-
-<!-- <button id="event-button">events</button>
-<button id="holiday-button">holidays</button>
-<button id="default-schedule-button">default schedules</button>
-<ul id="event-list"></ul>
-<ul id="holiday-list"></ul>
-<ul id="default-schedule-list"></ul> -->
 <div id="details-here"></div>
 
-
+<script src='/static/js/get-info.js'></script>
 {% endblock %}

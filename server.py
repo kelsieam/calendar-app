@@ -34,6 +34,7 @@ def sampledata():
     events = Event.query.all()
     for event in events:
         all_events.append(event.as_dict())
+    
     all_holidays = []
     holidays = Holiday.query.all()
     for holiday in holidays:
@@ -68,6 +69,14 @@ def create_calendar_event():
             event_with_parent = 5
         elif event_with_parent == 'neither-parent':
             event_with_parent = 6
+        
+        existing_event = Event.query.filter_by(start=event_start, end=event_end,
+                                               label=event_label, description=event_description,
+                                               shared=event_shared, with_parent=event_with_parent).first()
+        if existing_event:
+            # Handle the case where an identical event already exists (e.g., display an error message)
+            return render_template('calendar.html')
+
 
         event = create_event(start=event_start, end=event_end, label=event_label, 
                              description=event_description, shared=event_shared,

@@ -8,16 +8,14 @@ import crud
 import model
 import server
 
-os.system("dropdb calendar")
-# More code will go here
+# os.system("dropdb calendar")
+# # More code will go here
 
 os.system('dropdb calendar')
 os.system('createdb calendar')
 
 model.connect_to_db(server.app)
 model.db.create_all()
-
-
 
 
 with open('sample-data/holidays.json') as f:
