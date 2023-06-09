@@ -15,6 +15,17 @@
       {{ msg }}
     </p>
     {% endfor %}
+    <h3>Welcome, {{ username }}!</h3>
+    {% if family_members %}
+        <h4>Family Members:</h4>
+        <ul>
+            {% for member in family_members %}
+                <!-- {% if member != username %} -->
+                    <li>{{ member.name }}</li>
+                <!-- {% endif %} -->
+            {% endfor %}
+        </ul>
+    {% endif %}
     {% block body %}{% endblock %}
 
     {% block after_body %}{% endblock %}

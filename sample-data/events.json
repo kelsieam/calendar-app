@@ -5,7 +5,8 @@
         "label": "soccer game",
         "description": "against blah blah bring cleats and wear clean underwear or something",
         "shared": true,
-        "with_parent": 5
+        "with_parent": 5,
+        "user_id": 1
     },
     {
         "start": "2023-07-17 18:00:00",
@@ -13,7 +14,8 @@
         "label": "movie night",
         "description": "with blah blah friends winnie signed up to bring blah blah blah make sure she has blah",
         "shared": false,
-        "with_parent": 1
+        "with_parent": 1,
+        "user_id": 1
     },
     {
         "start": "2023-07-18 11:00:00",
@@ -21,7 +23,8 @@
         "label": "park playdate",
         "description": "lots of details here for fun exciting times",
         "shared": false,
-        "with_parent": 1
+        "with_parent": 1,
+        "user_id": 1
     },
     {
         "start": "2023-07-19 18:00:00",
@@ -29,7 +32,8 @@
         "label": "sleepover",
         "description": "sleepover with dad or something",
         "shared": false,
-        "with_parent": 2
+        "with_parent": 2,
+        "user_id": 1
     }
     
 ]

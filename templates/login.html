@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block head %}
+<link rel="stylesheet" href='/static/css/style.css' />
+{% endblock %}
+{% block body %}
+<h1>Co-parenting Calendar</h1>
+<form action="/login" method="POST">
+    <h2>Log In</h2>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+    <input type="submit" value="Log In">
+</form>
+<br>
+<form action="/signup" method="POST">
+    <h2>Create an Account</h2>
+    <label for="first-name">First Name:</label>
+    <input type="text" id="first-name" name="first-name" required>
+    <br>
+    <label for="new-username">Username:</label>
+    <input type="text" id="new-username" name="new-username" required>
+    <br>
+    <label for="new-password">Password:</label>
+    <input type="password" id="new-password" name="new-password" required>
+    <br>
+    <label for="is-child">Are you creating a child account?</label>
+    <input type="checkbox" id="is-child" name="is-child">
+    <br>
+    <input type="submit" value="Create Account">
+    
+</form>
+
+{% endblock %}

@@ -6,7 +6,8 @@
         "description": "In 2023 and subsequent odd-numbered years, Mother will have parenting time from 3:00 p.m. on December 23rd until 3:00 p.m. on Christmas Day; Father then will have parenting time until 3:00 p.m. on December 27th. Parents will celebrate jointly by arrangement.",
         "shared": true,
         "change_def_sched": false,
-        "with_parent": 3
+        "with_parent": 3,
+        "user_id": 1
     },
     {
         "start": "2023-12-25 15:00:00",
@@ -15,7 +16,8 @@
         "description": "In 2023 and subsequent odd-numbered years, Mother will have parenting time from 3:00 p.m. on December 23rd until 3:00 p.m. on Christmas Day; Father then will have parenting time until 3:00 p.m. on December 27th. Parents will celebrate jointly by arrangement.",
         "shared": true,
         "change_def_sched": false,
-        "with_parent": 4
+        "with_parent": 4,
+        "user_id": 1
     },
     {
         "start": "2023-06-17 20:00:00",
@@ -24,7 +26,8 @@
         "description": "Children will spend Mothers/Fathers Day (Sunday) with the celebrating parent. On non-resident days, parenting time will begin after dinner the previous day (Saturday) and will end at 3:00 p.m. on Mothers/Fathers Day.",
         "shared": true,
         "change_def_sched": false,
-        "with_parent": 4       
+        "with_parent": 4,
+        "user_id": 1   
     },
     {
         "start": "2024-03-25 09:00:00",
@@ -33,7 +36,8 @@
         "description": "Parents will alternate the entire five-day Spring Break and the weekend following Spring Break, beginning at 9:00 a.m. on the first day (Monday) of Spring Break and ending at the recommencement of school on the Monday after Spring Break. In 2023 and subsequent odd-numbered years, Mother will have parenting time; in even-numbered years, Father will have parenting time.",
         "shared": true,
         "change_def_sched": true,
-        "with_parent": 4
+        "with_parent": 4,
+        "user_id": 1
     },
     {
         "start": "2023-06-26 09:00:00",
@@ -42,7 +46,8 @@
         "description": "nothing important",
         "shared": true,
         "change_def_sched": false,
-        "with_parent": 4
+        "with_parent": 4,
+        "user_id": 1
     },
     {
         "start": "2023-06-20 09:00:00",
@@ -51,6 +56,7 @@
         "description": "super important",
         "shared": true,
         "change_def_sched": false,
-        "with_parent": 3
+        "with_parent": 3,
+        "user_id": 1
     }
 ]

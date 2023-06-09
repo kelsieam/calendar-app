@@ -188,18 +188,18 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
             }
 
               else if (dayCounter < schedule.cycle_duration) {
-                
-                  const loopCopy = new Date(loop);
-                  const newDate = new Date(loop);
-                  newDate.setDate(loop.getDate() + 1);
-                  const newDefaultSchedule = {
-                      groupId: 'defaultSchedule',
-                      title: 'parenting time',
-                      start: loopCopy,
-                      end: newDate,
-                      allDay: true
-                  };
-                  defaultSchedules.push(newDefaultSchedule);
+
+                const loopCopy = new Date(loop);
+                const newDate = new Date(loop);
+                newDate.setDate(loop.getDate() + 1);
+                const newDefaultSchedule = {
+                  groupId: 'defaultSchedule',
+                  title: 'parenting time',
+                  start: loopCopy,
+                  end: newDate,
+                  allDay: true
+                };
+                defaultSchedules.push(newDefaultSchedule);
               };
               loop.setDate(loop.getDate() + 1);
               dayCounter++;

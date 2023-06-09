@@ -1,62 +1,87 @@
-
-
-
-
 {% extends 'base.html' %}
 {% block title %}Let's see if this works{% endblock %}
 {% block head %}
 <link rel="stylesheet" href='/static/css/style.css' />
 {% endblock %}
 {% block body %}
+<h3><a href="/calendar">Click here for calendar</a></h3>
+<h2>Add to your family group</h2>
+<form action="/create-family" method="POST" id="connect-users">
+What is the username of the person you'd like to connect with?
+<br>
+<input type="text" id="username-to-connect" name="username-to-connect">
+<br>
+<input type="submit" label="Connect">
+</form>
+<h2>Parenting Schedule</h2>
+<form action="/create-parenting-schedule" method="POST" id="parenting-schedule">
+    When does this parenting schedule start?
+    <br>
+    <input type="date" 
+            id="parenting-schedule-start" 
+            name="parenting-schedule-start">
+    <br>
+    <br>
+    Which parent will start their parenting time on that day?
+    <br>
+    <input type="radio" id="parent-a" name="parenting-schedule-parent-start" value="true">
+    <label for="parent-a">current user</label>
+    <input type="radio" id="parent-b" name="parenting-schedule-parent-start" value="false">
+    <label for="parent-b">other parent</label>
+    <br>
+    <br>
+    For how many days in a row are you the custodial parent?
+    <br>
+    <input type="number" name="parenting-schedule-cycle-duration" id="parenting-schedule-cycle-duration">
+    <br>
+    <br>
+    <input type="submit">
+</form>
 
-<p>idk here's some events i guess</p>
-<p>lol just kidding there are no events learn how to use javascript</p>
 <h2>Events</h2>
 <form action='/create-event' method='POST' id="events">
-<label for="event-start">When does this event start?</label>
-<br>
-<input type="datetime-local" id="event-start"
-       name="event-start"
-       min="2023-06-07T00:00" max="2026-06-14T00:00">
-<br>
-<br>
+    <label for="event-start">When does this event start?</label>
+    <br>
+        <input type="datetime-local" id="event-start"
+            name="event-start">
+    <br>
+    <br>
     <label for="event-end">When does this event end?</label>
-<br>
-    <input type="datetime-local" id="event-end"
-           name="event-end"
-           min="2023-06-07T00:00" max="2026-06-14T00:00">
-<br>
-<br>
+    <br>
+        <input type="datetime-local" id="event-end"
+            name="event-end">
+    <br>
+    <br>
     <label for="event-label">Enter a name for this event:</label>
-<br>    
-    <input type="text" id="event-label" name="event-label">
-<br>
-<br>
+    <br>    
+        <input type="text" id="event-label" name="event-label">
+    <br>
+    <br>
     <label for="event-description">Enter a description for this event:</label>
-<br>    
-    <input type="text" id="event-description" name="event-description">
-<br>
-<br>
-    <label for="event-shared">Should this event be shared with the other parent's calendar?</label>
-<br> 
-    <input type="radio" id="event-shared-yes" name="event-shared" value="true">
-    <label for="yes">Yes</label>
-    <input type="radio" id="event-shared-no" name="event-shared" value="false">
-    <label for="no">No</label>
-<br>
-<br>
-<label for="event-with-parent">Which parent is attending this event?</label>
-<br> 
-    <input type="radio" id="parent-a" name="event-with-parent" value="parent-a">
-    <label for="parent-a">Parent A this should be like user_name but we'll get there</label>
-    <input type="radio" id="parent-b" name="event-with-parent" value="parent-b">
-    <label for="parent-b">Parent B</label>
-    <input type="radio" id="both-parents" name="event-with-parent" value="both-parents">
-    <label for="both-parents">Both Parents</label>
-    <input type="radio" id="neither-parent" name="event-with-parent" value="neither-parent">
-    <label for="neither-parent">Neither Parent</label>
-<br>
-<br>
+    <br>    
+        <input type="text" id="event-description" name="event-description">
+    <br>
+    <br>
+    <label for="event-shared">Should this event be shared with your family group?</label>
+    <br> 
+        <input type="radio" id="event-shared-yes" name="event-shared" value="true">
+        <label for="yes">Yes</label>
+        <input type="radio" id="event-shared-no" name="event-shared" value="false">
+        <label for="no">No</label>
+    <br>
+    <br>
+    <label for="event-with-parent">Which parent is attending this event?</label>
+    <br> 
+        <input type="radio" id="parent-a" name="event-with-parent" value="parent-a">
+        <label for="parent-a">Parent A this should be like user_name but we'll get there</label>
+        <input type="radio" id="parent-b" name="event-with-parent" value="parent-b">
+        <label for="parent-b">Parent B</label>
+        <input type="radio" id="both-parents" name="event-with-parent" value="both-parents">
+        <label for="both-parents">Both Parents</label>
+        <input type="radio" id="neither-parent" name="event-with-parent" value="neither-parent">
+        <label for="neither-parent">Neither Parent</label>
+    <br>
+    <br>
     <input type="submit">
 </form>
 
@@ -65,15 +90,13 @@
     <label for="holiday-start">When does this holiday start?</label>
     <br>
     <input type="datetime-local" id="holiday-start"
-           name="holiday-start"
-           min="2023-06-07T00:00" max="2026-06-14T00:00">
+           name="holiday-start">
     <br>
     <br>
         <label for="holiday-end">When does this holiday end?</label>
     <br>
         <input type="datetime-local" id="holiday-end"
-               name="holiday-end"
-               min="2023-06-07T00:00" max="2026-06-14T00:00">
+               name="holiday-end">
     <br>
     <br>
         <label for="holiday-label">Enter a name for this holiday:</label>
@@ -108,26 +131,26 @@
         <label for="no">No</label>
     <br>
     <br>
-    <section id="change-default-schedule" style="display: none;">
-    <h2>Change Default Schedule</h2>
+    </form>
+    <!-- <section id="change-default-schedule" style="display: none;"> -->
+    <form action="/create-new-default-schedule" method="POST">
+        <h2>Change Default Schedule</h2>
     <label for="default-schedule-parent">Which parent has parenting time the first part of this schedule?</label>
     <br>
-        <input type="radio" id="parent-a-start" name="default-schedule-parent" value="parent-a-start">
-        <label for="parent-a-start">Parent A</label>
-        <input type="radio" id="parent-b-start" name="default-schedule-parent" value="parent-b-start">
-        <label for="parent-b-start">Parent B</label>
+        <input type="radio" id="parent-a-start" name="default-schedule-parent" value="true">
+        <label for="parent-a-start">current user</label>
+        <input type="radio" id="parent-b-start" name="default-schedule-parent" value="false">
+        <label for="parent-b-start">other parent</label>
     <br>
     <br>
         <label for="default-schedule-start">When does this schedule start?</label>
     <br>
-        <input type="datetime-local" id="default-schedule-start"
-               name="default-schedule-start"
-               min="2023-06-07T00:00" max="2026-06-14T00:00">
-
+        <input type="date" id="default-schedule-start"
+               name="default-schedule-start">
     <br>
     </section>
     
-        <input type="submit">
+    <input type="submit">
     </form> 
 
 <div id="details-here"></div>
