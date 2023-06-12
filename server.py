@@ -18,6 +18,7 @@ app.jinja_env.undefined = StrictUndefined
 def is_user_logged_in():
     return 'username' in session
 
+
 @app.context_processor
 def user_family_names():
     user_info = {}
@@ -27,21 +28,24 @@ def user_family_names():
         current_user = User.query.filter_by(username=current_username).first()
         
         user_info['username'] = current_user.username
-        user_info['family_members'] = User.query.filter_by(
-            family_id=current_user.family_id).all()
-
+        if current_user.family_id is not None:
+            user_info['family_members'] = User.query.filter_by(
+                family_id=current_user.family_id).all()
+        else:
+            user_info['family_members'] = []
     return user_info
+
 
 @app.route('/')
 def homepage():
     """View homepage."""
-    # if 'logged_in' in session and session['logged_in']:
-    #     return render_template('homepage.html')
-    # else:
-    #     return redirect('/login')
+    if 'username' in session and session['username']:
+        return render_template('homepage.html')
+    else:
+        return redirect('/login')
     
     # this works and use this later but its annoying while I'm testing
-    return render_template('homepage.html')
+    # return render_template('homepage.html')
 
 
 @app.route('/inputinfo')
@@ -63,10 +67,16 @@ def log_in():
             return redirect('/inputinfo')
         else:
             flash('Invalid username or password')
-            return redirect('/login')
+            return redirect('/login', username=None)
         
     return render_template('login.html')
         
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect('/')
+
 
 @app.route('/signup', methods=['POST'])
 def signup():
@@ -110,11 +120,11 @@ def sampledata():
         return redirect('/login')
     # events = Event.query.all()
     user_events = Event.query.filter_by(user_id=current_user.user_id).all()
-    print(f'user_events {user_events}')
+    # print(f'user_events {user_events}')
     family_events = Event.query.join(User).filter(
         User.family_id == current_user.family_id, Event.shared == True
         ).all()
-    print(f'family_events {family_events}')
+    # print(f'family_events {family_events}')
     all_user_events = user_events + [event for event in family_events 
                                 if event not in user_events]
     for event in all_user_events:
@@ -137,6 +147,59 @@ def sampledata():
         all_def_schedules.append(def_schedule.as_dict())
 
     return {'all_events': all_events, 'all_holidays': all_holidays, 'all_def_schedules': all_def_schedules}
+
+
+@app.route('/event/<id>')
+def get_calendar_event_by_id(id):
+    return Event.query.filter_by(event_id=id).first().as_dict()
+
+
+@app.route('/holiday/<id>')
+def get_calendar_holiday_by_id(id):
+    return Holiday.query.filter_by(holiday_id=id).first().as_dict()
+
+
+@app.route('/delete-event/<id>', methods=['DELETE'])
+def delete_calendar_event(id):
+    event = get_calendar_event_by_id(id)
+    username = session['username']
+    current_user = User.query.filter_by(username=username).first()
+    print(event.user_id, current_user.user_id)
+    if event.user_id == current_user.user_id:
+        db.session.delete(event)
+        db.session.commit()
+        return {'Success': True}
+    else:
+        ## ooh maybe could send a request to creator to delete?
+        return {'Success': False, 'message': "you cannot delete another user's event"}
+    
+
+@app.route('/delete-holiday/<id>', methods=['DELETE'])
+def delete_calendar_holiday(id):
+    holiday = get_calendar_holiday_by_id(id)
+    username = session['username']
+    current_user = User.query.filter_by(username=username).first()
+    print(holiday.user_id, current_user.user_id)
+    if holiday.user_id == current_user.user_id:
+        db.session.delete(holiday)
+        db.session.commit()
+        return {'Success': True}
+    else:
+        ## ooh maybe could send a request to creator to delete?
+        return {'Success': False, 'message': "you cannot delete another user's event"}
+    
+    
+
+@app.route('/modify-event/<id>', methods=['DELETE', 'POST']) # PATCH
+def modify_calendar_event(id):
+    if request.method == 'DELETE':
+        event = get_calendar_event_by_id(id)
+        db.session.delete(event)
+        db.session.commit()
+        return flash("event deleted")
+    elif request.method == 'POST': # PATCH
+        event = get_calendar_event_by_id(id)
+        ## modify event as specified here
 
 
 @app.route('/create-event', methods = ['POST'])
@@ -173,8 +236,7 @@ def create_calendar_event():
                                                shared=event_shared, with_parent=event_with_parent,
                                                user_id=user_id).first()
         if existing_event:
-            # Handle the case where an identical event already exists (e.g., display an error message)
-            return render_template('calendar.html')
+            return redirect('/calendar')
 
         event = create_event(start=event_start, end=event_end, label=event_label, 
                              description=event_description, shared=event_shared,
@@ -182,7 +244,7 @@ def create_calendar_event():
         
         db.session.add(event)
         db.session.commit()
-        return render_template('calendar.html')
+        return redirect('/calendar')
 
 
 @app.route('/create-holiday', methods = ['POST'])
@@ -227,7 +289,7 @@ def create_calendar_holiday():
         
         db.session.add(holiday)
         db.session.commit()
-        return render_template('calendar.html')
+        return redirect('/calendar')
 
 
 @app.route('/create-parenting-schedule', methods = ['POST'])
@@ -325,7 +387,14 @@ def create_family_table():
         
         if user_to_connect_with:
             if user_to_connect_with.family_id:
-                current_user.family_id = user_to_connect_with.family_id
+                if current_user.family_id:
+                    flash("user already has a family")
+                else:
+                    current_user.family_id = user_to_connect_with.family_id
+            
+            elif current_user.family_id:
+                user_to_connect_with.family_id = current_user.family_id
+            
             else:
                 new_family = create_family()
                 
@@ -335,14 +404,17 @@ def create_family_table():
                 ## want to figure out how to ask the user_to_connect_with if they'd like 
                 ## to connect. I don't want anyone to be able to make a massive family 
                 ## without permission
-                db.session.add(new_family)
-                db.session.commit()
+                # db.session.add(new_family)
+                # db.session.commit()
                 flash("successfully connected")
+            db.session.add_all([current_user, user_to_connect_with])
+            db.session.commit()
 
         else:
             flash('User not found. Please check their username and try again')
 
     else:
+        flash('Must be logged in')
         return redirect('/login')
     
     return render_template('homepage.html')

@@ -15,16 +15,19 @@
       {{ msg }}
     </p>
     {% endfor %}
+    {% if 'username' in session and username is not none %}
     <h3>Welcome, {{ username }}!</h3>
-    {% if family_members %}
         <h4>Family Members:</h4>
         <ul>
             {% for member in family_members %}
-                <!-- {% if member != username %} -->
-                    <li>{{ member.name }}</li>
-                <!-- {% endif %} -->
+                {% if member.username != username %}
+                    <li>{{ member.name }}: {{ member.username }}</li>
+                {% endif %}
             {% endfor %}
         </ul>
+        <a href="/logout">Log Out</a>
+    {% else %}
+      <h5>You are not logged in</h5>
     {% endif %}
     {% block body %}{% endblock %}
 

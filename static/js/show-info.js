@@ -12,19 +12,42 @@ fetch('/api/sampledata')
     return response.json();
   })
   .then((data) => {
+    // console.log(data)
     const allEvents = data.all_events;
     const allHolidays = data.all_holidays;
     const allDefaultSchedules = data.all_def_schedules;
 
     //$(document).ready(function() {
       
-      createEventEvents(allEvents);
-      createHolidayEvents(allHolidays);
+      events = allEvents.map(x => ({
+        title: x.label,
+        start: x.start,
+        end: x.end,
+        url: `/event/${x.event_id}`,
+        extendedProps: {
+          methods: ['DELETE', 'PATCH']
+        }
+      })
+      )
+      
+      holidays = allHolidays.map(x => ({
+        title: x.label,
+        start: x.start,
+        end: x.end,
+        url: `/holiday/${x.holiday_id}`,
+        extendedProps: {
+          methods: ['DELETE', 'PATCH']
+        }
+      })
+      )
+      
+      // createEventEvents(allEvents);
+      // createHolidayEvents(allHolidays);
       createHolidayDict(allHolidays);
       createDefaultScheduleEvents(allDefaultSchedules, holidayDict);
-      
+      // console.log(allEvents)
       $('#calendar').fullCalendar({
-        editable: false,
+        editable: true,
         selectable: true,
         eventLimit: true,
         displayEventTime: true,
@@ -41,46 +64,74 @@ fetch('/api/sampledata')
         },
         eventSources: [
         {
+          editable: true,
           events: events
         },
         {
-          events: holidays
+          editable: true,
+          events: holidays,
+          color: '#378006'
         },
         {
           events: defaultSchedules,
           rendering: 'background',
           backgroundColor: '#c2c2d6'  
         }
-        ]
-      });
-    });
+        ],
+        eventClick: function(info) {
+          console.log(info);
+          if (confirm("Do you want to delete this event?")) {
+            fetch(info.url, {
+              method: 'DELETE'
+              
+            })
+            $('#calendar').fullCalendar('removeEvents', info._id);
+          } else {
+            alert('Edit event: ' + info.title);
+          } 
+          return false;
+        }
+    })
+  })
 
 
 
-function createEventEvents(allEvents) {
-  for (let event of allEvents) {
-    const newEvent = {
-      title: event.label,
-      start: event.start,
-      end: event.end
-    };
-    events.push(newEvent);
-  }
-  return events
-}
+// function mapEventsToFullCalendar(events) {
+//   return events.map(x => ({
+//     title: x.label,
+//     start: x.start,
+//     end: x.end,
+//     url: `/delete-event/${x.event_id}`
+//   }) 
+//   )
+// }
 
-function createHolidayEvents(allHolidays) {
-  for (let holiday of allHolidays) {
-      const newHoliday = {
-          title: holiday.label,
-          start: holiday.start,
-          end: holiday.end,
-          // display: 'background'
-      };
-      holidays.push(newHoliday);
-  }
-  return holidays
-}
+// function createEventEvents(allEvents) {
+//   for (let event of allEvents) {
+//       const newEvent = {
+//           title: event.label,
+//           start: event.start,
+//           end: event.end,
+//           url: `/delete-event/${event.event_id}`
+//       };
+//       events.push(newEvent);
+//   }
+//   return events;
+// }
+
+// function createHolidayEvents(allHolidays) {
+//   for (let holiday of allHolidays) {
+//       const newHoliday = {
+//           title: holiday.label,
+//           start: holiday.start,
+//           end: holiday.end,
+//           url: `/delete-holiday/${holiday.holiday_id}`
+//           // display: 'background'
+//       };
+//       holidays.push(newHoliday);
+//   }
+//   return holidays;
+// }
 
 function createHolidayDict(allHolidays) {
   for (let holiday of allHolidays) {
@@ -182,7 +233,7 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                         allDay: true
                       }
                   defaultSchedules.push(newDefaultSchedule);
-                  console.log(newDefaultSchedule);
+                  // console.log(newDefaultSchedule);
                 }
                 }
             }
@@ -208,5 +259,5 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
     };
 
   }
-}
+};
 

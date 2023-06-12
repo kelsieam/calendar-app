@@ -18,11 +18,18 @@ model.connect_to_db(server.app)
 model.db.create_all()
 
 users = [
-    crud.create_user('kelsie1', 'password', 'kelsie1', None, False),
-    crud.create_user('kelsie2', 'password', 'kelsie2', None, False),
-    crud.create_user('kelsie3', 'password', 'kelsie3', None, False),
-    crud.create_user('kelsie4', 'password', 'kelsie4', None, False),
+    crud.create_user('kelsie1', 'password', 'Bob', None, False),
+    crud.create_user('kelsie2', 'password', 'Art', None, False),
+    crud.create_user('kelsie3', 'password', 'Somebodys name', None, False),
+    crud.create_user('kelsie4', 'password', 'Rutteger', None, False),
+    crud.create_user('kelsie5', 'password', 'Bort', None, True),
+    crud.create_user('kelsie6', 'password', 'Borty', None, True),
+    crud.create_user('kelsie7', 'password', 'Bortimer', None, False),
+    crud.create_user('kelsie8', 'password', 'Bortward', None, False),
+    crud.create_user('kelsie9', 'password', 'Bortifer', None, True),
+    crud.create_user('kelsie10', 'password', 'Borticia', None, False)
     ]
+
 
 model.db.session.add_all(users)
 model.db.session.commit()
@@ -44,6 +51,7 @@ for holiday in holiday_data:
     db_holiday = crud.create_holiday(start, end, label, description, 
                                      change_def_sched, with_parent, user_id)
     holidays_in_db.append(db_holiday)
+
 
 model.db.session.add_all(holidays_in_db)
 model.db.session.commit()
@@ -83,6 +91,7 @@ for def_sched in def_sched_data:
     end = def_sched['end']
     cycle_duration = def_sched['cycle_duration']
     user_id = def_sched['user_id']
+
 
     db_def_sched = crud.create_def_sched(parent_start, start, end, cycle_duration, user_id)
     def_sched_in_db.append(db_def_sched)
