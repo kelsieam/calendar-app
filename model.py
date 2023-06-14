@@ -103,6 +103,15 @@ class Holiday(db.Model):
 
 class User(db.Model):
     """a user"""
+    def as_dict(self):
+        return {
+            'user_id': self.user_id,
+            'username': self.username,
+            'password_hash': self.password_hash,
+            'name': self.name,
+            'family_id': self.family_id,
+            'is_child': self.is_child
+        }
     __tablename__ = 'users'
 
     user_id = db.Column(db.Integer, 

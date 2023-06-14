@@ -149,7 +149,14 @@ def sampledata():
     for def_schedule in family_def_schedules:
         all_def_schedules.append(def_schedule.as_dict())
 
-    return {'all_events': all_events, 'all_holidays': all_holidays, 'all_def_schedules': all_def_schedules}
+    all_users = User.query.all()
+
+    for user in all_users:
+        user = user.as_dict()
+
+    return {'all_events': all_events, 'all_holidays': all_holidays, 
+            'all_def_schedules': all_def_schedules}
+# 'all_users': all_users
 
 
 @app.route('/event/<id>')

@@ -17,6 +17,7 @@ fetch('/api/sampledata')
     const allEvents = data.all_events;
     const allHolidays = data.all_holidays;
     const allDefaultSchedules = data.all_def_schedules;
+    const allUsers = data.all_users;
 
     //$(document).ready(function() {
       
@@ -204,7 +205,7 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
         endDate.setDate(startDateCopy.getDate() + 730);
         let loop = new Date(startDate);
         while (loop <= endDate) {
-          let dayCounter = 0; 
+          let dayCounter = 0;
             while (dayCounter < (schedule.cycle_duration * 2)) {
               let dailyStartDate = new Date(loop);
               let dailyStartDateCopy = dailyStartDate.toDateString();
@@ -257,7 +258,7 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                       end: newDate,
                       allDay: true
                     } 
-                    // otherParentDefaultSchedules.push(newOtherParentDefaultSchedule);
+                    otherParentDefaultSchedules.push(newOtherParentDefaultSchedule);
                   } else if (holiday.with_parent === 3) {
                     const loopCopy = new Date(loop);
                     const newDate = new Date(loop);
@@ -288,7 +289,8 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                 };
                 defaultSchedules.push(newDefaultSchedule);
               } else if (dayCounter < (schedule.cycle_duration * 2) && 
-                dayCounter >= schedule.cycle_duration) {
+                dayCounter >= schedule.cycle_duration && 
+                (loop < (endDate - schedule.cycle_duration))) {
                 const loopCopy = new Date(loop);
                 const newDate = new Date(loop);
                 newDate.setDate(loop.getDate() + 1);
@@ -299,7 +301,7 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                   end: newDate,
                   allDay: true
                 }
-                // otherParentDefaultSchedules.push(newOtherParentDefaultSchedule);
+                otherParentDefaultSchedules.push(newOtherParentDefaultSchedule);
               }
               loop.setDate(loop.getDate() + 1);
               dayCounter++;
