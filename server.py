@@ -3,9 +3,10 @@
 from flask import (Flask, render_template, request, flash, session, redirect)
 from model import connect_to_db, db
 from flask_sqlalchemy import SQLAlchemy
-from crud import create_event, create_def_sched, create_holiday, create_user, create_family
+from crud import create_event, create_def_sched, create_holiday, create_user, create_family, get_calendar_event_by_id, get_calendar_holiday_by_id
 from model import Event, Holiday, DefaultSchedule, User, Family, db
 import psycopg2
+import openai
 from datetime import datetime
 
 from jinja2 import StrictUndefined
@@ -18,6 +19,10 @@ app.jinja_env.undefined = StrictUndefined
 def is_user_logged_in():
     return 'username' in session
 
+def current_user():
+    current_username = session['username']
+    current_user = User.query.filter_by(username=current_username).first()
+    return current_user
 
 @app.context_processor
 def user_family_names():
@@ -110,21 +115,19 @@ def calendar():
 
 @app.route('/api/sampledata')
 def sampledata():
-    ## get events related to logged in user
-    # lots of querying
     all_events = []
+
     if 'username' in session:
         current_username = session['username']
         current_user = User.query.filter_by(username=current_username).first()
     else: 
         return redirect('/login')
-    # events = Event.query.all()
+    
     user_events = Event.query.filter_by(user_id=current_user.user_id).all()
-    # print(f'user_events {user_events}')
     family_events = Event.query.join(User).filter(
         User.family_id == current_user.family_id, Event.shared == True
         ).all()
-    # print(f'family_events {family_events}')
+    
     all_user_events = user_events + [event for event in family_events 
                                 if event not in user_events]
     for event in all_user_events:
@@ -150,28 +153,30 @@ def sampledata():
 
 
 @app.route('/event/<id>')
-def get_calendar_event_by_id(id):
+def get_calendar_event_by_id_for_json(id):
     return Event.query.filter_by(event_id=id).first().as_dict()
 
 
 @app.route('/holiday/<id>')
-def get_calendar_holiday_by_id(id):
+def get_calendar_holiday_by_id_for_json(id):
     return Holiday.query.filter_by(holiday_id=id).first().as_dict()
 
 
-@app.route('/delete-event/<id>', methods=['DELETE'])
+@app.route('/delete-event/<int:id>', methods=['DELETE'])
 def delete_calendar_event(id):
+    # print(f'{id} *******************************')
     event = get_calendar_event_by_id(id)
+    print(event)
     username = session['username']
     current_user = User.query.filter_by(username=username).first()
     print(event.user_id, current_user.user_id)
     if event.user_id == current_user.user_id:
         db.session.delete(event)
         db.session.commit()
-        return {'Success': True}
+        return {'success': True}
     else:
         ## ooh maybe could send a request to creator to delete?
-        return {'Success': False, 'message': "you cannot delete another user's event"}
+        return {'success': False, 'message': "you cannot delete another user's event"}
     
 
 @app.route('/delete-holiday/<id>', methods=['DELETE'])
@@ -179,27 +184,61 @@ def delete_calendar_holiday(id):
     holiday = get_calendar_holiday_by_id(id)
     username = session['username']
     current_user = User.query.filter_by(username=username).first()
-    print(holiday.user_id, current_user.user_id)
+    # print(holiday.user_id, current_user.user_id)
     if holiday.user_id == current_user.user_id:
         db.session.delete(holiday)
         db.session.commit()
-        return {'Success': True}
+        return {'success': True}
     else:
-        ## ooh maybe could send a request to creator to delete?
-        return {'Success': False, 'message': "you cannot delete another user's event"}
-    
-    
+        return {'success': False, 'message': "You cannot delete another user's event"}
+   
 
-@app.route('/modify-event/<id>', methods=['DELETE', 'POST']) # PATCH
+@app.route('/modify-event/<id>', methods=['PATCH']) # PATCH
 def modify_calendar_event(id):
-    if request.method == 'DELETE':
-        event = get_calendar_event_by_id(id)
+    event = get_calendar_event_by_id(id)
+    new_title = request.form.get('eventTitle')
+    new_start = request.form.get('eventStart')
+    new_end = request.form.get('eventEnd')
+    print(f'new_title: {new_title}, new_start: {new_start}, new_end: {new_end}')
+    if new_title:
+        event.label = new_title
+    if new_start:
+        event.start = new_start
+    if new_end:
+        event.end = new_end
+    username = session['username']
+    current_user = User.query.filter_by(username=username).first()
+    if event.user_id == current_user.user_id:
         db.session.delete(event)
         db.session.commit()
-        return flash("event deleted")
-    elif request.method == 'POST': # PATCH
-        event = get_calendar_event_by_id(id)
-        ## modify event as specified here
+        return {'success': True, 'message': "Event successfully updated"}
+    else:
+        return {'success': False, 'message': "You cannot modify another user's event"}
+
+
+@app.route('/modify-holiday/<id>', methods=['PATCH']) # PATCH
+def modify_calendar_holiday(id):
+    holiday = get_calendar_holiday_by_id(id)
+    new_title = request.form.get('eventTitle')
+    new_start = request.form.get('eventStart')
+    new_end = request.form.get('eventEnd')
+    print(f'new_title: {new_title}, new_start: {new_start}, new_end: {new_end}')
+    if new_title:
+        holiday.label = new_title
+    if new_start:
+        holiday.start = new_start
+    if new_end:
+        holiday.end = new_end
+    username = session['username']
+    current_user = User.query.filter_by(username=username).first()
+    if holiday.user_id == current_user.user_id:
+        db.session.delete(holiday)
+        db.session.commit()
+        return {'success': True, 'message': "Holiday successfully updated"}
+    else:
+        return {'success': False, 'message': "You cannot modify another user's holiday"}
+
+
 
 
 @app.route('/create-event', methods = ['POST'])
@@ -363,7 +402,7 @@ def create_change_default_schedule():
             current_username = session['username']
             current_user = User.query.filter_by(username=current_username).first()
             user_id = current_user.user_id
-        else: 
+        else:
             return redirect('/login')
 
         new_default_schedule = create_def_sched(parent_start=changed_schedule_parent_start, 

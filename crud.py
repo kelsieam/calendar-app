@@ -44,6 +44,13 @@ def create_family():
     return family
 
 
+def get_calendar_event_by_id(id):
+    return Event.query.filter_by(event_id=id).first()
+
+def get_calendar_holiday_by_id(id):
+    return Holiday.query.filter_by(holiday_id=id).first()
+
+
 if __name__ == '__main__':
     from server import app
     connect_to_db(app)

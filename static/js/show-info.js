@@ -5,6 +5,7 @@
 let events = [];
 let holidays = [];
 let defaultSchedules = [];
+let otherParentDefaultSchedules = [];
 let holidayDict = {};
 
 fetch('/api/sampledata')
@@ -68,70 +69,97 @@ fetch('/api/sampledata')
           events: events
         },
         {
-          editable: true,
           events: holidays,
+          editable: true,
           color: '#378006'
         },
         {
           events: defaultSchedules,
           rendering: 'background',
-          backgroundColor: '#c2c2d6'  
+          backgroundColor: '#c2c2d6',
+        },
+        {
+          events: otherParentDefaultSchedules,
+          rendering: 'background',
+          backgroundColor: '#ffcc99'
         }
         ],
+        
         eventClick: function(info) {
-          console.log(info);
-          if (confirm("Do you want to delete this event?")) {
-            fetch(info.url, {
-              method: 'DELETE'
-              
+          // console.log(info);
+          $('#eventModal').modal('show');
+          let url = info['url'];
+          // console.log(url);
+          let eventOrHoliday = url.split('/').slice(-2, -1)[0]
+          // console.log(eventOrHoliday)
+          let id = url.split('/').pop(); // id is what's after the / in the url field
+          // console.log(id);
+          let changeEventForm = document.getElementById('changeEventForm');
+          
+          changeEventForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            let changeEventFormData = new FormData(changeEventForm);
+            let urlForChange;
+            if (eventOrHoliday === 'event') {
+              urlForChange = `/modify-event/${id}`;
+            } else {
+              urlForChange = `/modify-holiday/${id}`;
+            }
+            console.log(`urlForChange: ${urlForChange}`);
+            fetch(urlForChange, {
+              method: 'PATCH',
+              body: changeEventFormData
             })
-            $('#calendar').fullCalendar('removeEvents', info._id);
-          } else {
-            alert('Edit event: ' + info.title);
-          } 
+              .then(function(response) {
+                return response.json();
+              })
+              .then(function(responseJson) {
+                console.log(responseJson)
+                if (responseJson.success) {
+                  $('#eventModal').modal('hide');
+                } else {
+                  getErrorMessage(responseJson);
+                }
+              });
+          });
+
+          let deleteButton = document.getElementById('delete-button');
+          deleteButton.addEventListener('click', function() {
+            let confirmed = confirm('Are you sure you want to delete this event?')
+            if (confirmed) {
+            let urlForDelete;
+            if (eventOrHoliday === 'event') {
+              urlForDelete = `/delete-event/${id}`;
+            } else {
+              urlForDelete = `/delete-holiday/${id}`;
+            }
+            console.log(urlForDelete);
+            fetch(urlForDelete, {
+              method: 'DELETE'
+            })
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(responseJson) {
+              console.log(responseJson);
+              if (responseJson['success']) {
+                $('#eventModal').modal('hide');
+              } else {
+                  getErrorMessage(responseJson);
+                }
+              })
+            }
+          })
           return false;
         }
     })
   })
 
-
-
-// function mapEventsToFullCalendar(events) {
-//   return events.map(x => ({
-//     title: x.label,
-//     start: x.start,
-//     end: x.end,
-//     url: `/delete-event/${x.event_id}`
-//   }) 
-//   )
-// }
-
-// function createEventEvents(allEvents) {
-//   for (let event of allEvents) {
-//       const newEvent = {
-//           title: event.label,
-//           start: event.start,
-//           end: event.end,
-//           url: `/delete-event/${event.event_id}`
-//       };
-//       events.push(newEvent);
-//   }
-//   return events;
-// }
-
-// function createHolidayEvents(allHolidays) {
-//   for (let holiday of allHolidays) {
-//       const newHoliday = {
-//           title: holiday.label,
-//           start: holiday.start,
-//           end: holiday.end,
-//           url: `/delete-holiday/${holiday.holiday_id}`
-//           // display: 'background'
-//       };
-//       holidays.push(newHoliday);
-//   }
-//   return holidays;
-// }
+function getErrorMessage(data) {
+  let errorMessage = data.message;
+  $('#error-message').text(errorMessage);
+  $('#error-message').show();
+}
 
 function createHolidayDict(allHolidays) {
   for (let holiday of allHolidays) {
@@ -187,7 +215,7 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                     // show on other parent's calendar
                   }
                 }
-              } 
+              }
               
               else if (dayCounter < schedule.cycle_duration) {
                   const loopCopy = new Date(loop);
@@ -217,10 +245,19 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
               // check which parent has parenting time for holiday
               if (dailyStartDateCopy in holidayDict) {
                 const holidays = holidayDict[dailyStartDateCopy];
-              
                 for (const holiday of holidays) {
                   if (holiday.with_parent === 4) { 
-                    // share with other parent's calender
+                    const loopCopy = new Date(loop);
+                    const newDate = new Date(loop);
+                    newDate.setDate(loop.getDate() + 1)
+                    const newOtherParentDefaultSchedule = {
+                      groupId: 'defaultSchedule',
+                      title: 'parenting time',
+                      start: loopCopy,
+                      end: newDate,
+                      allDay: true
+                    } 
+                    // otherParentDefaultSchedules.push(newOtherParentDefaultSchedule);
                   } else if (holiday.with_parent === 3) {
                     const loopCopy = new Date(loop);
                     const newDate = new Date(loop);
@@ -234,12 +271,11 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                       }
                   defaultSchedules.push(newDefaultSchedule);
                   // console.log(newDefaultSchedule);
+                  }
                 }
-                }
-            }
+              }
 
               else if (dayCounter < schedule.cycle_duration) {
-
                 const loopCopy = new Date(loop);
                 const newDate = new Date(loop);
                 newDate.setDate(loop.getDate() + 1);
@@ -251,7 +287,20 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                   allDay: true
                 };
                 defaultSchedules.push(newDefaultSchedule);
-              };
+              } else if (dayCounter < (schedule.cycle_duration * 2) && 
+                dayCounter >= schedule.cycle_duration) {
+                const loopCopy = new Date(loop);
+                const newDate = new Date(loop);
+                newDate.setDate(loop.getDate() + 1);
+                const newOtherParentDefaultSchedule = {
+                  groupId: 'defaultSchedule',
+                  title: 'parenting time',
+                  start: loopCopy,
+                  end: newDate,
+                  allDay: true
+                }
+                // otherParentDefaultSchedules.push(newOtherParentDefaultSchedule);
+              }
               loop.setDate(loop.getDate() + 1);
               dayCounter++;
             }
