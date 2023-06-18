@@ -43,8 +43,6 @@ fetch('/api/sampledata')
       })
       )
       
-      // createEventEvents(allEvents);
-      // createHolidayEvents(allHolidays);
       createHolidayDict(allHolidays);
       createDefaultScheduleEvents(allDefaultSchedules, holidayDict);
       // console.log(allEvents)
@@ -214,11 +212,22 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                 for (let holiday of holidays) {
                   if (holiday.parent_with === 4) {
                     // show on other parent's calendar
+                    
+                      const loopCopy = new Date(loop);
+                      const newDate = new Date(loop);
+                      newDate.setDate(loop.getDate() + 1)
+                      const newOtherParentDefaultSchedule = {
+                        groupId: 'defaultSchedule',
+                        title: 'parenting time',
+                        start: loopCopy,
+                        end: newDate,
+                        allDay: true
+                      } 
+                      otherParentDefaultSchedules.push(newOtherParentDefaultSchedule);
+                    
                   }
                 }
-              }
-              
-              else if (dayCounter < schedule.cycle_duration) {
+              } else if (dayCounter < schedule.cycle_duration) {
                   const loopCopy = new Date(loop);
                   const newDate = new Date(loop);
                   newDate.setDate(loop.getDate() + 1);
@@ -230,11 +239,25 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                       allDay: true
                   };
                   defaultSchedules.push(newDefaultSchedule);
+              } else if (dayCounter < (schedule.cycle_duration * 2) && 
+                  dayCounter >= schedule.cycle_duration && 
+                  loop < (endDate - schedule.cycle_duration)) {
+                    const loopCopy = new Date(loop);
+                    const newDate = new Date(loop);
+                    newDate.setDate(loop.getDate() + 1);
+                    const newOtherParentDefaultSchedule = {
+                      groupId: 'defaultSchedule',
+                      title: 'parenting time',
+                      start: loopCopy,
+                      end: newDate,
+                      allDay: true
+                  };
+                otherParentDefaultSchedules.push(newOtherParentDefaultSchedule);
               }
               loop.setDate(loop.getDate() + 1);
               dayCounter++;
-            };
-          }
+            
+          }}
     } else {
         const endDate = new Date(schedule.end);
         let loop = new Date(startDate);

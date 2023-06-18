@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+{% endblock %}
+{% block body %}
+<h2>files and lists</h2>
+<div class="alert alert-success" role="alert" id="create-list-success"></div>
+<form action="/upload-something" method="POST" id="new-upload">
+    What do you want this document to be called?
+    <br>
+    <input type="text" id="upload-name">
+    <br>
+    <br>
+    Please select a file to upload:
+    <br>
+    <input type="file" class="form control file" id="upload-file" name="upload-file">
+</form>
+<br>
+<br>
+<form action="/create-list" method="POST" id="new-list">
+    <div class="form-group">
+        <label for="list-title">List Title:</label>
+        <input type="text" id="list-title" name="list-title">
+    </div>
+    <br>
+    <input type="submit" id="new-list-submit" value="Create List">
+</form>
+<br>
+<br>
+<!-- <form action="/add-to-list" method="POST" id="new-list-element">
+    <label for="list-element">List Item:</label>
+    <input type="text" id="list-element" name="list-element">
+    <br>
+    <input type="submit" id="new-list-element-submit" value="Add Item">
+</form> -->
+<div id="list-container">
+    <ul id="list-elements-container">
+
+    </ul>
+</div>
+<br>
+<br>
+<script src="/static/js/get-upload-info.js"></script>
+{% endblock %}

@@ -16,6 +16,7 @@
     </p>
     {% endfor %}
     {% if 'username' in session and username is not none %}
+    <div id="username">{{ username }}</div>
     <h3>Welcome, {{ username }}!</h3>
         <h4>Family Members:</h4>
         <ul>

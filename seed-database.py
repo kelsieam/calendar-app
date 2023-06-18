@@ -17,6 +17,7 @@ os.system('createdb calendar')
 model.connect_to_db(server.app)
 model.db.create_all()
 
+
 users = [
     crud.create_user('kelsie1', 'password', 'Bob', None, False),
     crud.create_user('kelsie2', 'password', 'Art', None, False),
@@ -33,6 +34,36 @@ users = [
 
 model.db.session.add_all(users)
 model.db.session.commit()
+
+
+lists = [
+    crud.create_list('groceries to buy', 1),
+    crud.create_list('things to remember', 1)
+]
+
+model.db.session.add_all(lists)
+model.db.session.commit()
+
+list_elements = [
+    crud.create_list_element('cereal', 1, 1),
+    crud.create_list_element('apples', 1, 1),
+    crud.create_list_element('cleats', 2, 1),
+    crud.create_list_element('sunscreen', 2, 1)
+]
+    
+model.db.session.add_all(list_elements)
+model.db.session.commit()
+
+
+files = [
+    crud.create_file('https://images.sampletemplates.com/wp-content/uploads/2016/04/26175856/Medical-New-Patient-Consultation-Form.jpg',
+                     'doctor form', 'finish before appt', 1)
+]
+model.db.session.add_all(files)
+model.db.session.commit()
+
+
+
 
 with open('sample-data/holidays.json') as f:
     holiday_data = json.loads(f.read())

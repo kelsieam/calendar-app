@@ -3,8 +3,8 @@
 from flask import (Flask, render_template, request, flash, session, redirect)
 from model import connect_to_db, db
 from flask_sqlalchemy import SQLAlchemy
-from crud import create_event, create_def_sched, create_holiday, create_user, create_family, get_calendar_event_by_id, get_calendar_holiday_by_id
-from model import Event, Holiday, DefaultSchedule, User, Family, db
+from crud import create_event, create_def_sched, create_holiday, create_user, create_family, get_calendar_event_by_id, get_calendar_holiday_by_id, create_list, create_list_element, create_file
+from model import Event, Holiday, DefaultSchedule, User, Family, List, ListElement, File, db
 import psycopg2
 import openai
 from datetime import datetime
@@ -39,6 +39,23 @@ def user_family_names():
         else:
             user_info['family_members'] = []
     return user_info
+
+@app.route('/user-family-info', methods=['GET', 'POST'])
+def user_family_info():
+    # user_info = {}
+    
+    if 'username' in session:
+        current_username = session['username']
+        current_user = User.query.filter_by(username=current_username).first()
+        
+        # user_info['user'] = current_user
+        if current_user.family_id is not None:
+            family_members = User.query.filter_by(
+                family_id=current_user.family_id).all()
+        else:
+            family_members = []
+    
+    return {'user': current_user, 'family': family_members}
 
 
 @app.route('/')
@@ -186,7 +203,7 @@ def delete_calendar_event(id):
         return {'success': False, 'message': "you cannot delete another user's event"}
     
 
-@app.route('/delete-holiday/<id>', methods=['DELETE'])
+@app.route('/delete-holiday/<int:id>', methods=['DELETE'])
 def delete_calendar_holiday(id):
     holiday = get_calendar_holiday_by_id(id)
     username = session['username']
@@ -198,9 +215,9 @@ def delete_calendar_holiday(id):
         return {'success': True}
     else:
         return {'success': False, 'message': "You cannot delete another user's event"}
-   
+    
 
-@app.route('/modify-event/<id>', methods=['PATCH']) # PATCH
+@app.route('/modify-event/<int:id>', methods=['PATCH']) # PATCH
 def modify_calendar_event(id):
     event = get_calendar_event_by_id(id)
     new_title = request.form.get('eventTitle')
@@ -216,14 +233,14 @@ def modify_calendar_event(id):
     username = session['username']
     current_user = User.query.filter_by(username=username).first()
     if event.user_id == current_user.user_id:
-        db.session.delete(event)
+        db.session.add(event)
         db.session.commit()
         return {'success': True, 'message': "Event successfully updated"}
     else:
         return {'success': False, 'message': "You cannot modify another user's event"}
 
 
-@app.route('/modify-holiday/<id>', methods=['PATCH']) # PATCH
+@app.route('/modify-holiday/<int:id>', methods=['PATCH']) # PATCH
 def modify_calendar_holiday(id):
     holiday = get_calendar_holiday_by_id(id)
     new_title = request.form.get('eventTitle')
@@ -239,12 +256,11 @@ def modify_calendar_holiday(id):
     username = session['username']
     current_user = User.query.filter_by(username=username).first()
     if holiday.user_id == current_user.user_id:
-        db.session.delete(holiday)
+        db.session.add(holiday)
         db.session.commit()
         return {'success': True, 'message': "Holiday successfully updated"}
     else:
         return {'success': False, 'message': "You cannot modify another user's holiday"}
-
 
 
 
@@ -420,7 +436,7 @@ def create_change_default_schedule():
         
         db.session.add(new_default_schedule)
         db.session.commit()
-        return render_template('calendar.html')
+        return redirect('/calendar')
 
 
 @app.route('/create-family', methods=['POST'])
@@ -463,7 +479,48 @@ def create_family_table():
         flash('Must be logged in')
         return redirect('/login')
     
-    return render_template('homepage.html')
+    return redirect('/')
+
+@app.route('/uploads')
+def uploads_page():
+
+    return render_template('uploads.html')
+
+
+@app.route('/create-list', methods=['POST'])
+def create_new_list():
+
+    if 'username' in session:
+        current_username = session['username']
+        current_user = User.query.filter_by(username=current_username).first()
+        user_id = current_user.user_id
+        title = request.form.get('list-title')
+
+        new_list = create_list(title, user_id)
+
+        db.session.add(new_list)
+        db.session.commit()
+
+        new_list_in_db = List.query.filter_by(title=title, user_id=user_id).first()
+        list_id = new_list_in_db.list_id
+
+        return {'success': True, 'message': 'List created', 'list_id': list_id}
+    
+    return redirect('/')
+
+
+@app.route('/add-to-list', methods=['POST'])
+def add_to_list():
+    if 'username' in session:
+        current_username = session['username']
+        current_user = User.query.filter_by(username=current_username).first()
+        user_id = current_user.user_id
+        content = request.form.get('')
+
+        new_list_element = create_list_element(content, user_id)
+        # list_id,
+
+    
 
 
 if __name__ == "__main__":

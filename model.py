@@ -128,6 +128,9 @@ class User(db.Model):
     events = db.relationship('Event', back_populates='user')
     holidays = db.relationship('Holiday', back_populates='user')
     default_schedule = db.relationship('DefaultSchedule', back_populates='user')
+    files = db.relationship('File', back_populates='user')
+    lists = db.relationship('List', back_populates='user')
+    list_elements = db.relationship('ListElement', back_populates='user')
 
     def __repr__(self):
         return f'<User user_id={self.user_id} username={self.username}>'
@@ -151,6 +154,77 @@ class Family(db.Model):
     
     def __repr__(self):
         return f'<Family family_id={self.family_id}>'
+
+
+class File(db.Model):
+    """stores uploaded files to share with family members"""
+    def as_dict(self):
+        return {
+            'file_id': self.file_id,
+            'location': self.file_id,
+            'title': self.title,
+            'comment': self.comment,
+            'user_id': self.user_id
+        }
+    
+    __tablename__ = 'files'
+    file_id = db.Column(db.Integer,
+                        autoincrement=True,
+                        primary_key=True)
+    location = db.Column(db.String,
+                         unique=True,
+                         nullable=False)
+    title = db.Column(db.String(50),
+                      nullable=False)
+    comment = db.Column(db.String)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    user = db.relationship('User', back_populates='files')
+
+    def __repr__(self):
+        return f'<File file_id={self.file_id}, location={self.location}>'
+    
+
+class List(db.Model):
+    """stores lists created by family members"""
+    __tablename__ = 'lists'
+
+    list_id = db.Column(db.Integer,
+                        autoincrement=True,
+                        primary_key=True)
+    title = db.Column(db.String,
+                      unique=True,
+                      nullable=False)
+    user_id = db.Column(db.Integer, 
+                        db.ForeignKey('users.user_id'), 
+                        nullable=False)
+    user = db.relationship('User', back_populates='lists')
+    list_elements = db.relationship('ListElement', back_populates='lists')
+
+    def __repr__(self):
+        return f'<List list_id={self.list_id}, title={self.title}>'
+
+
+class ListElement(db.Model):
+    """stores elements of the lists from lists table"""
+    __tablename__ = 'list_elements'
+    list_element_id = db.Column(db.Integer,
+                        autoincrement=True,
+                        primary_key=True)
+    content = db.Column(db.String,
+                        nullable=False)
+    list_id = db.Column(db.Integer,
+                        db.ForeignKey('lists.list_id'))
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey('users.user_id'))
+    
+    user = db.relationship('User', back_populates='list_elements')
+    lists = db.relationship('List', back_populates='list_elements')
+    
+    def __repr__(self):
+        return f'<ListElement list_element_id={self.list_element_id}, list_id={self.list_id}>'
+
+
 
 def connect_to_db(flask_app, db_uri="postgresql:///calendar", echo=False):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri

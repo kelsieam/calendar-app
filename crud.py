@@ -1,6 +1,6 @@
 """CRUD operations."""
 
-from model import db, Event, DefaultSchedule, Holiday, User, Family, connect_to_db
+from model import db, Event, DefaultSchedule, Holiday, User, Family, List, ListElement, File, connect_to_db
 
 
 # Functions start here!
@@ -42,6 +42,24 @@ def create_family():
     family = Family()
 
     return family
+
+
+def create_list(title, user_id):
+    list = List(title=title, user_id=user_id)
+
+    return list
+
+
+def create_list_element(content, list_id, user_id):
+    list_element = ListElement(content=content, list_id=list_id, user_id=user_id)
+
+    return list_element
+
+
+def create_file(location, title, comment, user_id):
+    file = File(location=location, title=title, comment=comment, user_id=user_id)
+
+    return file
 
 
 def get_calendar_event_by_id(id):
