@@ -161,7 +161,7 @@ class File(db.Model):
     def as_dict(self):
         return {
             'file_id': self.file_id,
-            'location': self.file_id,
+            'location': self.location,
             'title': self.title,
             'comment': self.comment,
             'user_id': self.user_id
@@ -187,6 +187,13 @@ class File(db.Model):
 
 class List(db.Model):
     """stores lists created by family members"""
+    def as_dict(self):
+        return {
+            'list_id': self.list_id,
+            'title': self.title,
+            'user_id': self.user_id,
+            'username': self.user.username
+        }
     __tablename__ = 'lists'
 
     list_id = db.Column(db.Integer,
@@ -207,7 +214,15 @@ class List(db.Model):
 
 class ListElement(db.Model):
     """stores elements of the lists from lists table"""
+    def as_dict(self):
+        return {
+            'list_element_id': self.list_element_id,
+            'content': self.content,
+            'list_id': self.list_id,
+            'user_id': self.user_id
+        }
     __tablename__ = 'list_elements'
+
     list_element_id = db.Column(db.Integer,
                         autoincrement=True,
                         primary_key=True)

@@ -487,6 +487,52 @@ def uploads_page():
     return render_template('uploads.html')
 
 
+@app.route('/api/uploads')
+def lists_and_files():
+    if 'username' in session:
+        current_username = session['username']
+        current_user = User.query.filter_by(username=current_username).first()
+        current_user_json = current_user.as_dict()
+    else: 
+        return redirect('/login')
+    
+    all_lists_json = []
+    all_list_elements_json = []
+    all_files_json = []
+
+    user_lists = List.query.filter_by(user_id=current_user.user_id).all()
+    family_lists = List.query.join(User).filter(
+        User.family_id == current_user.family_id).all()
+    all_user_lists = user_lists + [list for list in family_lists
+                                if list not in user_lists]
+    for list in all_user_lists:
+        all_lists_json.append(list.as_dict())
+    # print(all_lists_json)
+    
+    list_ids = [list.list_id for list in all_user_lists]
+    list_elements = db.session.query(ListElement)\
+        .join(List, ListElement.list_id.in_(list_ids)).all()
+    for list_element in list_elements:
+        all_list_elements_json.append(list_element.as_dict())
+    print(all_list_elements_json)
+    
+    user_files = File.query.filter_by(user_id=current_user.user_id).all()
+    family_files = File.query.join(User).filter(
+        User.family_id == current_user.family_id).all()
+    all_user_files = user_files + [file for file in family_files if 
+                                   file not in user_files]
+    for file in all_user_files:
+        all_files_json.append(file.as_dict())
+    # print(all_files_json)
+    
+    return {
+            'all_lists_json': all_lists_json,
+            'all_list_elements_json': all_list_elements_json,
+            'all_files_json': all_files_json,
+            'current_user': current_user_json
+            }
+
+
 @app.route('/create-list', methods=['POST'])
 def create_new_list():
 
@@ -494,6 +540,7 @@ def create_new_list():
         current_username = session['username']
         current_user = User.query.filter_by(username=current_username).first()
         user_id = current_user.user_id
+        username = current_user.username
         title = request.form.get('list-title')
 
         new_list = create_list(title, user_id)
@@ -503,8 +550,11 @@ def create_new_list():
 
         new_list_in_db = List.query.filter_by(title=title, user_id=user_id).first()
         list_id = new_list_in_db.list_id
+        # username = 
+        
 
-        return {'success': True, 'message': 'List created', 'list_id': list_id}
+        return {'success': True, 'message': 'List created', 'list_id': list_id, 
+                'user_id': user_id, 'username': username}
     
     return redirect('/')
 
