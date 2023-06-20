@@ -559,16 +559,24 @@ def create_new_list():
     return redirect('/')
 
 
-@app.route('/add-to-list', methods=['POST'])
-def add_to_list():
+@app.route('/add-to-list/<int:id>', methods=['POST'])
+def add_to_list(id):
     if 'username' in session:
         current_username = session['username']
         current_user = User.query.filter_by(username=current_username).first()
+        username = current_user.username
         user_id = current_user.user_id
-        content = request.form.get('')
+        content = request.form.get('list-element')
+        print(content)
+        list_id = id
 
-        new_list_element = create_list_element(content, user_id)
-        # list_id,
+        new_list_element = create_list_element(content, list_id, user_id)
+        
+        db.session.add(new_list_element)
+        db.session.commit()
+
+        return {'success': True, 'message': 'Added to list', 'list_id': list_id, 
+                'user_id': user_id, 'username': username, 'content': content}
 
     
 

@@ -7,7 +7,7 @@
 {% block body %}
 <h2>files and lists</h2>
 <div class="alert alert-success" role="alert" id="create-list-success"></div>
-<form action="/upload-something" method="POST" id="new-upload">
+<!-- <form action="/upload-something" method="POST" id="new-upload">
     What do you want this document to be called?
     <br>
     <input type="text" id="upload-name">
@@ -16,7 +16,7 @@
     Please select a file to upload:
     <br>
     <input type="file" class="form control file" id="upload-file" name="upload-file">
-</form>
+</form> -->
 <br>
 <br>
 <form action="/create-list" method="POST" id="new-list">
@@ -30,31 +30,33 @@
 <br>
 <br>
 <section id="add-list-element">
-<form action="/add-to-list" method="POST" id="new-list-element">
-    <label for="list-element">List Item:</label>
-    <input type="text" id="list-element" name="list-element">
-    <br>
-    <br>
-    <input type="submit" id="new-list-element-submit" value="Add Item">
-</form>
+
 </section>
 <!-- 
 <div class='accordion accordion-flush' id='list-container'>
     <div class='accordion-item' id='listId'>
-      <h2 class ='accordion-header' id='flush-headingOne'>
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-          listTitle
-        </button>
-      </h2>
-      <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-        <div class="accordion-body">
-            <li>listElement</li>
-            <li>listElement</li>
-            <li>listElement</li>
-            <li>listElement</li>
+        <h2 class ='accordion-header' id='flush-headingOne'>
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                listTitle
+            </button>
+        </h2>
+        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+                <li>listElement</li>
+                <li>listElement</li>
+                <li>listElement</li>
+                <li>listElement</li>
+                <li> 
+                    <form action="/add-to-list" method="POST" id="new-list-element"> 
+                        <input type="text" id="list-element" name="list-element">
+                        <input type="submit" id="new-list-element-submit" value="Add Item">
+                    </form>
+                </li>
+            </div>
         </div>
-      </div>
-</div> -->
+    </div> 
+</div>
+-->
 
 
 
