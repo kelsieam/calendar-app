@@ -1,3 +1,50 @@
+const alertDisplay = document.getElementById('create-list-success');
+// const listsDiv = getElementById('lists');
+// listsDiv.style.display = 'inline-block';
+
+// const formsDiv = getElementById('forms');
+// listsDiv.style.display = 'inline-block';
+
+// this section creates the html elements to hold the 
+// file display accordion
+const fileContainer = document.getElementById('file-container');
+
+const fileDisplay = document.createElement('div');
+fileDisplay.setAttribute('id', 'flush-headingOne');
+fileDisplay.setAttribute('class', 'accordion-item');
+
+const fileTitleSpace = document.createElement('h2');
+fileTitleSpace.setAttribute('class', 'accordion-header');
+fileTitleSpace.setAttribute('id', 'flush-headingOne');
+
+const fileTitleButton = document.createElement('button');    
+fileTitleButton.setAttribute('class', 'accordion-button collapsed')
+fileTitleButton.setAttribute('type', 'button');
+fileTitleButton.setAttribute('data-bs-toggle', 'collapse');
+fileTitleButton.setAttribute('data-bs-target', '#flush-collapseOne');
+fileTitleButton.setAttribute('aria-expanded', 'false');
+fileTitleButton.setAttribute('aria-controls', 'flush-collapseOne');
+fileTitleButton.innerHTML = 'Uploaded Files';
+
+const fileHolder = document.createElement('div');
+fileHolder.setAttribute('id', 'flush-collapseOne');
+fileHolder.setAttribute('class', 'accordion-collapse collapse');
+fileHolder.setAttribute('aria-labelledby', 'flush-headingOne');
+fileHolder.setAttribute('data-bs-parent', `#listContainer`);
+
+const fileHolderBody = document.createElement('div');
+fileHolderBody.setAttribute('class', 'accordion-body');
+
+fileHolder.appendChild(fileHolderBody);
+
+fileTitleSpace.appendChild(fileTitleButton);
+
+fileDisplay.appendChild(fileTitleSpace);
+fileDisplay.appendChild(fileHolder);
+
+fileContainer.appendChild(fileDisplay);
+
+
 document.addEventListener('DOMContentLoaded', function () {
     console.log('in get-upload-info.js')
     fetch(('/api/uploads'))
@@ -5,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return existingUploads.json()
         })
         .then(existingUploadsJson => {
-            console.log(existingUploadsJson);
+            // console.log(existingUploadsJson);
             const allFiles = existingUploadsJson['all_files_json'];
             console.log('all files:', allFiles);
             allFiles.forEach(file => {
@@ -15,7 +62,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 // console.log(fileLocation);
                 const fileTitle = file.title;
                 // console.log(fileTitle);
-                displayFiles(fileId, fileTitle, fileLocation);
+                addFileToDisplay(fileId, fileTitle, fileLocation);
+                // const someDumbShit = document.createElement('li');
+                // someDumbShit.innerText = 'this is some dumb shit';
+                // fileHolderBody.appendChild(someDumbShit);
             })
 
             const allLists = existingUploadsJson['all_lists_json'];
@@ -28,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // bring things from allListElements into a new list mapped to the items in allLists
             allLists.forEach(list => {
                 
-                const listElements = allListElements.filter(element => element.list_id === list.list_id)
+                const listElements = allListElements.filter(element => element.list_id === list.list_id);
                 // console.log(allLists);
                 // console.log(allListElements);
                 // console.log(listElements);
@@ -47,8 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // console.log(userId)
 
                 if (listTitle === '') {
-                    document.getElementById('create-list-success').
-                        innerHTML = 'Please enter a title for the list'
+                    alertDisplay.innerHTML = 'Please enter a title for the list'
                 } else {
 
                     // const listDisplay = {
@@ -71,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         })
                         .then((responseJson) => {
                             // console.log(responseJson);
-                            document.getElementById('create-list-success').innerHTML = responseJson['message']
+                            alertDisplay.innerHTML = responseJson['message']
                             // console.log(document.getElementById('create-list-success').innerHTML)
                             const listId = responseJson['list_id']
                             const username = responseJson['username']
@@ -86,60 +135,93 @@ document.addEventListener('DOMContentLoaded', function () {
     // submitListItemButton.addEventListener('click', function () {
         
     // })
-
 });
 
-function displayFiles(fileId, fileTitle, fileLocation) {
+
+
+// function handleNewfileUpload(fileId, fileTitle, fileLocation) {
+    const fileSubmit = document.getElementById('new-file-submit');
+    fileSubmit.addEventListener(('click'), function(evt) {
+        evt.preventDefault();
+        createFileFormData = new FormData(document.getElementById('new-upload'));
+        fetch(('/create-file'), {
+            method: 'POST',
+            body: createFileFormData
+        })
+            .then((response) => {
+                return response.json()
+            })
+            .then((responseJson) => {
+                console.log(responseJson);
+                alertDisplay.innerHTML = responseJson['message'];
+                fileId = responseJson['file_id'];
+                fileTitle = responseJson['file_title'];
+                fileLocation = responseJson['file_location'];
+                addFileToDisplay(fileId, fileTitle, fileLocation);
+                
+            })
+    })
+// }
+
+function addFileToDisplay(fileId, fileTitle, fileLocation) {
     console.log(fileId, fileTitle, fileLocation);
-
-    const fileContainer = document.getElementById('file-container');
-
-    const fileDisplay = document.createElement('div');
-    fileDisplay.setAttribute('id', 'flush-headingOne');
-    fileDisplay.setAttribute('class', 'accordion-item');
-
-    const fileTitleSpace = document.createElement('h2');
-    fileTitleSpace.setAttribute('class', 'accordion-header');
-    fileTitleSpace.setAttribute('id', 'flush-headingOne');
-
-    const fileTitleButton = document.createElement('button');    
-    fileTitleButton.setAttribute('class', 'accordion-button collapsed')
-    fileTitleButton.setAttribute('type', 'button');
-    fileTitleButton.setAttribute('data-bs-toggle', 'collapse');
-    fileTitleButton.setAttribute('data-bs-target', 'flush-collapseOne');
-    fileTitleButton.setAttribute('aria-expanded', 'false');
-    fileTitleButton.setAttribute('aria-controls', 'flush-collapseOne');
-    fileTitleButton.innerHTML = 'Uploaded Files';
-
-    const fileHolder = document.createElement('div');
-    fileHolder.setAttribute('id', 'flush-collapseOne');
-    fileHolder.setAttribute('class', 'accordion-collapse collapse');
-    fileHolder.setAttribute('aria-labelledby', 'flush-headingOne');
-    fileHolder.setAttribute('data-bs-parent', `#listContainer`);
-
-    const fileHolderBody = document.createElement('div');
-    fileHolderBody.setAttribute('class', 'accordion-body');
-
     const fileLink = document.createElement('p');
     fileLink.setAttribute('id', fileId);
-    fileLink.innerHTML = `<a href='${fileLocation}'>${fileTitle}</a>`;
+
+    const fileLinkInner = document.createElement('a');
+    fileLinkInner.setAttribute('href', fileLocation);
+    fileLinkInner.innerHTML = `${fileTitle} `
+    // fileLink.innerHTML = `<a href='${fileLocation}'>${fileTitle}</a>`;
+    fileDeleteIcon = document.createElement('i');
+    fileDeleteIcon.setAttribute('class', 'fa-solid fa-xmark delete-icon');
+
+    fileDeleteIcon.addEventListener(('click'), function(evt) {
+        evt.preventDefault();
+        const targetFile = evt.target.closest('p')
+        const targetFileId = targetFile.id
+        console.log(targetFileId);
+        targetFile.remove();
+        fetch((`/delete-file/${targetFileId}`), {
+            method: 'DELETE'
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((responseJson) => {
+                console.log(responseJson);
+                alertDisplay.innerHTML = responseJson['message']
+            })
+    })
+
+    
+    fileLink.appendChild(fileLinkInner);
+    fileLink.appendChild(fileDeleteIcon);
 
     fileHolderBody.appendChild(fileLink);
-
-    fileHolder.appendChild(fileHolderBody);
-
-    fileTitleSpace.appendChild(fileTitleButton);
-
-    fileDisplay.appendChild(fileTitleSpace);
-    fileDisplay.appendChild(fileHolder);
-
-    fileContainer.appendChild(fileDisplay);
-
+    // console.log('fileLink added')
+    // console.log(fileLink, fileLinkInner);
 }
 
+// this function creates the html elements for the list display
+// accordion, and takes in new input for it
+//
+//                      listContainer
+//                          |
+//                      listDisplay
+//                          |
+//          listTitle   -----------   listElementHolder
+//                  |				        |
+//      listTitleButton	      -----listElementHolderBody------
+//                            |	             |     	         |
+//                          listElement	  listItemForm     listDeleteButton
+//                          |     	       |  	     |
+//                   deleteIcon    inputListItem    submitListItemButton
+//
+//
 function displayList(listId, username, displayedTitle, elements) {
     // console.log(listId);
     const listContainer = document.getElementById('list-container');
+    // listContainer.style.display = 'inline-block';
 
     const listDisplay = document.createElement('div');
     listDisplay.setAttribute('id', listId);
@@ -203,7 +285,7 @@ function displayList(listId, username, displayedTitle, elements) {
             }))
             .then((newElementJson) => {
                 console.log(newElementJson);
-                document.getElementById('create-list-success').innerHTML = newElementJson['message'];
+                alertDisplay.innerHTML = newElementJson['message'];
                 const newListElement = document.createElement('li');
                 newListElement.setAttribute('id', newElementJson['list_element_id'])
                 newListElement.innerHTML = `
@@ -226,7 +308,7 @@ function displayList(listId, username, displayedTitle, elements) {
                         })
                         .then(responseJson => {
                             console.log(responseJson);
-                            document.getElementById('create-list-success').innerHTML = responseJson['message'];
+                            alertDisplay.innerHTML = responseJson['message'];
                         })
                 });
                 listElementHolderBody.appendChild(newListElement);
@@ -249,7 +331,7 @@ function displayList(listId, username, displayedTitle, elements) {
                 return response.json()
             })
             .then((responseJson) => {
-                document.getElementById('create-list-success').innerHTML = responseJson['message'];
+                alertDisplay.innerHTML = responseJson['message'];
                 // somehow delete the html elements for this   .remove removes node and all children
                 listToDelete.remove()
             })
@@ -287,7 +369,7 @@ function displayList(listId, username, displayedTitle, elements) {
                 })
                 .then((responseJson) => {
                     console.log(responseJson);
-                    document.getElementById('create-list-success').innerHTML = responseJson['message'];
+                    alertDisplay.innerHTML = responseJson['message'];
                 })
         });
     

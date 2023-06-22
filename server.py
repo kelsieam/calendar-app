@@ -580,8 +580,11 @@ def create_new_file():
 
             new_file_in_db = File.query.filter_by(title=title, user_id=user_id).first()
             file_id = new_file_in_db.file_id
+            file_location = new_file_in_db.location
+            file_title = new_file_in_db.title
 
-            return {'success': True, 'message': 'File saved', 'file_id': file_id}
+            return {'success': True, 'message': 'File saved', 'file_id': file_id, 
+                    'file_location': file_location, 'file_title': file_title}
     
     return redirect('/')
 
@@ -593,7 +596,11 @@ def delete_file(id):
         current_user = User.query.filter_by(username=current_username).first()
         file_to_delete = get_db_file_by_id(id)
         title = file_to_delete.title
-        if file_to_delete.user_id == current_user.user_id:    
+        location = file_to_delete.location
+        print(f'************{location}**************')
+        if file_to_delete.user_id == current_user.user_id:
+            # os.remove(location)
+
             db.session.delete(file_to_delete)
             db.session.commit()
 

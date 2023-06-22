@@ -8,40 +8,48 @@
 {% block body %}
 
 <div class="alert alert-success" role="alert" id="create-list-success"></div>
-<h2>file upload</h2>
-<form action="/create-file" method="POST" id="new-upload" enctype="multipart/form-data">
-    What do you want this document to be called?
-    <br>
-    <input type="text" id="file-title" name="file-title">
-    <br>
-    <br>
-    Please select a file to upload:
-    <br>
-    <input type="file" class="form control file" id="file" name="file">
-    <br>
-    <br>
-    Please add any comments about this upload:
-    <br>
-    <input type="text" id="file-comment" name="file-comment">
-    <br>
-    <br>
-    <input type="submit" id="new-file-submit" value="Upload File">
-</form>
+<!-- <div id="forms"> -->
+    <h2>file upload</h2>
+    <form action="/create-file" method="POST" id="new-upload" enctype="multipart/form-data">
+        What do you want this document to be called?
+        <br>
+        <input type="text" id="file-title" name="file-title">
+        <br>
+        <br>
+        Please select a file to upload:
+        <br>
+        <input type="file" class="form control file" id="file" name="file">
+        <br>
+        <br>
+        Please add any comments about this upload:
+        <br>
+        <input type="text" id="file-comment" name="file-comment">
+        <br>
+        <br>
+        <input type="submit" id="new-file-submit" value="Upload File">
+    </form>
+    <div id="file-container" class="accordion accordion-flush"></div>
+<!-- </div> -->
 
-<div id="file-container" class="accordion accordion-flush"></div>
-
 <br>
-<h2>create a shared list</h2>
-<form action="/create-list" method="POST" id="new-list">
-    <div class="form-group">
-        <label for="list-title">List Title:</label>
-        <input type="text" id="list-title" name="list-title">
-    </div>
+<!-- <div id="lists"> -->
+    <h2>create a shared list</h2>
+    <form action="/create-list" method="POST" id="new-list">
+        <div class="form-group">
+            <label for="list-title">List Title:</label>
+            <input type="text" id="list-title" name="list-title">
+        </div>
+        <br>
+        <input type="submit" id="new-list-submit" value="Create List">
+    </form>
     <br>
-    <input type="submit" id="new-list-submit" value="Create List">
-</form>
+    <br>
+
+    <div id="list-container" class="accordion accordion-flush"></div>
+<!-- </div> -->
 <br>
 <br>
+<script src="/static/js/get-upload-info.js"></script>
 
 <!-- 
 <div class='accordion accordion-flush' id='list-container'>
@@ -71,8 +79,5 @@
 
 
 
-<div id="list-container" class="accordion accordion-flush"></div>
-<br>
-<br>
-<script src="/static/js/get-upload-info.js"></script>
+
 {% endblock %}
