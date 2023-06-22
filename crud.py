@@ -68,6 +68,14 @@ def get_calendar_event_by_id(id):
 def get_calendar_holiday_by_id(id):
     return Holiday.query.filter_by(holiday_id=id).first()
 
+def get_db_list_by_id(id):
+    return List.query.filter_by(list_id=id).first()
+
+def get_db_list_element_by_id(id):
+    return ListElement.query.filter_by(list_element_id=id).first()
+
+def get_db_file_by_id(id):
+    return File.query.filter_by(file_id=id).first()
 
 if __name__ == '__main__':
     from server import app

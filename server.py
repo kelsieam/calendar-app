@@ -1,20 +1,30 @@
 """Server for movie ratings app."""
 
-from flask import (Flask, render_template, request, flash, session, redirect)
+from flask import (Flask, render_template, request, flash, session, redirect, url_for)
 from model import connect_to_db, db
 from flask_sqlalchemy import SQLAlchemy
-from crud import create_event, create_def_sched, create_holiday, create_user, create_family, get_calendar_event_by_id, get_calendar_holiday_by_id, create_list, create_list_element, create_file
+from crud import create_event, create_def_sched, create_holiday, create_user, create_family, get_calendar_event_by_id, get_calendar_holiday_by_id, create_list, create_list_element, create_file, get_db_list_by_id, get_db_list_element_by_id, get_db_file_by_id
 from model import Event, Holiday, DefaultSchedule, User, Family, List, ListElement, File, db
+from werkzeug.utils import secure_filename
 import psycopg2
-import openai
+# import openai
+import os
 from datetime import datetime
 
 from jinja2 import StrictUndefined
 
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
 app = Flask(__name__)
 app.secret_key = "wowkelsielearnhowtodothislol"
 app.jinja_env.undefined = StrictUndefined
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def is_user_logged_in():
     return 'username' in session
@@ -190,10 +200,10 @@ def get_calendar_holiday_by_id_for_json(id):
 def delete_calendar_event(id):
     # print(f'{id} *******************************')
     event = get_calendar_event_by_id(id)
-    print(event)
+    # print(event)
     username = session['username']
     current_user = User.query.filter_by(username=username).first()
-    print(event.user_id, current_user.user_id)
+    # print(event.user_id, current_user.user_id)
     if event.user_id == current_user.user_id:
         db.session.delete(event)
         db.session.commit()
@@ -533,6 +543,65 @@ def lists_and_files():
             }
 
 
+@app.route('/create-file', methods=['POST'])
+def create_new_file():
+    if 'username' in session:
+        current_username = session['username']
+        current_user = User.query.filter_by(username=current_username).first()
+        user_id = current_user.user_id
+        username = current_user.username
+        title = request.form.get('file-title')
+        print(f'title: {title}')
+        comment = request.form.get('file-comment')
+        print(f'comment: {comment}')
+        # print(request.files)
+
+        if 'file' not in request.files:
+            # print('line 558')
+            return {'success': False, 'message': 'You must select a file'}
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            # print('line 564')
+            return {'success': False, 'message': 'You must select a file'}
+        
+        if file and allowed_file(file.filename):
+            print('********* in save line 568 **********')
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # file.save(f'/static/uploads/{filename}')
+            # return redirect(f'/static/uploads/{filename}')
+            new_file = create_file(f'/static/uploads/{filename}', title, comment, user_id)
+            print(new_file)
+
+            db.session.add(new_file)
+            db.session.commit()
+
+            new_file_in_db = File.query.filter_by(title=title, user_id=user_id).first()
+            file_id = new_file_in_db.file_id
+
+            return {'success': True, 'message': 'File saved', 'file_id': file_id}
+    
+    return redirect('/')
+
+
+@app.route('/delete-file/<int:id>', methods=['DELETE'])
+def delete_file(id):
+    if 'username' in session:
+        current_username = session['username']
+        current_user = User.query.filter_by(username=current_username).first()
+        file_to_delete = get_db_file_by_id(id)
+        title = file_to_delete.title
+        if file_to_delete.user_id == current_user.user_id:    
+            db.session.delete(file_to_delete)
+            db.session.commit()
+
+            return {'success': True, 'message': f"File '{title}' deleted"}
+        
+        return {'success': False, 'message': 'You can only delete files you have created'}
+
+
 @app.route('/create-list', methods=['POST'])
 def create_new_list():
 
@@ -575,10 +644,49 @@ def add_to_list(id):
         db.session.add(new_list_element)
         db.session.commit()
 
-        return {'success': True, 'message': 'Added to list', 'list_id': list_id, 
-                'user_id': user_id, 'username': username, 'content': content}
+        new_list_element_in_db = db.session.query(ListElement) \
+            .order_by(db.desc(ListElement.list_element_id)).first()
+        # print(new_list_element_in_db)
+        # print(f'580: {new_list_element_in_db.list_element_id}')
+        list_element_id = new_list_element_in_db.list_element_id
 
-    
+        return {'success': True, 'message': 'Added to list', 'list_id': list_id, 
+                'user_id': user_id, 'username': username, 'content': content, 
+                'list_element_id': list_element_id}
+
+
+@app.route('/delete-list/<int:id>', methods=['DELETE'])
+def delete_list(id):
+    if 'username' in session:
+        current_username = session['username']
+        current_user = User.query.filter_by(username=current_username).first()
+        list_to_delete = get_db_list_by_id(id)
+        title = list_to_delete.title
+        if list_to_delete.user_id == current_user.user_id:    
+            db.session.delete(list_to_delete)
+            db.session.commit()
+
+            return {'success': True, 'message': f"List '{title}' deleted"}
+        
+        return {'success': False, 'message': 'You can only delete lists you have created'}
+
+
+@app.route('/delete-list-element/<int:id>', methods=['DELETE'])
+def delete_list_element(id):
+    if 'username' in session:
+        current_username = session['username']
+        current_user = User.query.filter_by(username=current_username).first()
+        list_element_to_delete = get_db_list_element_by_id(id)
+        list_element_title = list_element_to_delete.content
+        list_ID = list_element_to_delete.list_id
+        
+        list = List.query.filter_by(list_id=list_ID).first()
+        list_title = list.title
+
+        db.session.delete(list_element_to_delete)
+        db.session.commit()
+
+        return {'success': True, 'message': f" '{list_element_title}' deleted from list '{list_title}' "}
 
 
 if __name__ == "__main__":
