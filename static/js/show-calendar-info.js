@@ -26,6 +26,7 @@ fetch('/api/sampledata')
         start: x.start,
         end: x.end,
         url: `/event/${x.event_id}`,
+        description: x.description,
         extendedProps: {
           methods: ['DELETE', 'PATCH']
         }
@@ -37,11 +38,13 @@ fetch('/api/sampledata')
         start: x.start,
         end: x.end,
         url: `/holiday/${x.holiday_id}`,
+        description: x.description,
         extendedProps: {
           methods: ['DELETE', 'PATCH']
         }
       })
       )
+      
       
       createHolidayDict(allHolidays);
       createDefaultScheduleEvents(allDefaultSchedules, holidayDict);
@@ -84,9 +87,15 @@ fetch('/api/sampledata')
         }
         ],
         
+        eventMouseover: function (info) {
+          console.log('mouseover', info);
+        },
+
         eventClick: function(info) {
-          // console.log(info);
+          console.log(info);
           $('#eventModal').modal('show');
+          const modalTitle = document.getElementById('eventModalLabel');
+          modalTitle.innerHTML = info.title;
           let url = info['url'];
           // console.log(url);
           let eventOrHoliday = url.split('/').slice(-2, -1)[0]
@@ -94,7 +103,30 @@ fetch('/api/sampledata')
           let id = url.split('/').pop(); // id is what's after the / in the url field
           // console.log(id);
           let changeEventForm = document.getElementById('changeEventForm');
-          
+
+          const displayData = document.getElementById('show-event-data');
+
+          // const displayTitle = document.getElementById('show-event-title');
+          // displayTitle.innerHTML = `<h6>${info.title}</h6>`;
+
+          const displayTime = document.getElementById('show-event-time');
+          // console.log(info.start._i, info.end._i);
+          const dateOfEvent = new Date(info.start._i);
+          const monthIndex = dateOfEvent.getMonth();
+          const monthNames = ['January', 'February', 'March', 'April', 'May', 
+                  'June', 'July', 'August', 'September', 'October', 'November', 'December']
+          const monthOfEvent = monthNames[monthIndex];
+          const dayOfEvent = dateOfEvent.getDate();
+          const formattedDate = monthOfEvent + " " + dayOfEvent;
+
+          displayTime.innerHTML = formattedDate;
+
+          const displayDescription = document.getElementById('show-event-description');
+          displayDescription.innerHTML = `
+                    Event description:
+                    <br>${info.description}
+          `;
+
           changeEventForm.addEventListener('submit', function(event) {
             event.preventDefault();
             let changeEventFormData = new FormData(changeEventForm);
@@ -114,8 +146,19 @@ fetch('/api/sampledata')
               })
               .then(function(responseJson) {
                 console.log(responseJson)
-                if (responseJson.success) {
+                if (responseJson['success']) {
                   $('#eventModal').modal('hide');
+                  if (responseJson['new_title']) {
+                    info.title = responseJson['new_title'];
+                  } 
+                  if (responseJson['new_start']) {
+                    info.start = responseJson['new_start'];
+                  } 
+                  if (responseJson['new_end']) {
+                    info.end = responseJson['new_end'];
+                  }
+                  $('#calendar').fullCalendar('updateEvent', info);
+                  // location.reload();
                 } else {
                   getErrorMessage(responseJson);
                 }
@@ -126,27 +169,29 @@ fetch('/api/sampledata')
           deleteButton.addEventListener('click', function() {
             let confirmed = confirm('Are you sure you want to delete this event?')
             if (confirmed) {
-            let urlForDelete;
-            if (eventOrHoliday === 'event') {
-              urlForDelete = `/delete-event/${id}`;
-            } else {
-              urlForDelete = `/delete-holiday/${id}`;
-            }
-            console.log(urlForDelete);
-            fetch(urlForDelete, {
-              method: 'DELETE'
-            })
-            .then(function(response) {
-              return response.json();
-            })
-            .then(function(responseJson) {
-              console.log(responseJson);
-              if (responseJson['success']) {
-                $('#eventModal').modal('hide');
+              let urlForDelete;
+              if (eventOrHoliday === 'event') {
+                urlForDelete = `/delete-event/${id}`;
               } else {
-                  getErrorMessage(responseJson);
-                }
+                urlForDelete = `/delete-holiday/${id}`;
+              }
+              console.log(urlForDelete);
+              fetch(urlForDelete, {
+                method: 'DELETE'
               })
+              .then(function(response) {
+                return response.json();
+              })
+              .then(function(responseJson) {
+                console.log(responseJson);
+                if (responseJson['success']) {
+                  $('#eventModal').modal('hide');
+                  // 'removeEvents'[info._id, idOrFilter];
+                  $('#calendar').fullCalendar('removeEvents', info._id);
+                } else {
+                    getErrorMessage(responseJson);
+                  }
+                })
             }
           })
           return false;

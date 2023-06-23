@@ -245,7 +245,8 @@ def modify_calendar_event(id):
     if event.user_id == current_user.user_id:
         db.session.add(event)
         db.session.commit()
-        return {'success': True, 'message': "Event successfully updated"}
+        return {'success': True, 'message': "Event successfully updated", 
+                'new_title': new_title, 'new_start': new_start, 'new_end': new_end}
     else:
         return {'success': False, 'message': "You cannot modify another user's event"}
 

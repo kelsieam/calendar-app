@@ -27,13 +27,22 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="eventModalLabel">Modify Event</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <h5 class="modal-title" id="eventModalLabel"></h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          
+          <div id="show-event-data">
+            <!-- <div id="show-event-title"></div>
+            <br> -->
+            <div id="show-event-time"></div>
+            <br>
+            <div id="show-event-description"></div>
+          </div>
+          <hr>
+          <h5>Modify Event</h5>
+          <br>
           <form id="changeEventForm" method="PATCH" action="/modify-event/<id>">
             New title:
             <input type="text" name="eventTitle" placeholder="New Title">
@@ -49,7 +58,7 @@
             <button type="submit" form="changeEventForm" class="btn btn-primary">Save Changes</button>
           </form>
           <form>
-            <br>
+            <hr>
             <h5>Delete Event</h5>
             <br>
             You can only delete events you have created. Delete event?

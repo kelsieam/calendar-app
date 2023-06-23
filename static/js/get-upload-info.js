@@ -7,6 +7,19 @@ const alertDisplay = document.getElementById('create-list-success');
 
 // this section creates the html elements to hold the 
 // file display accordion
+//
+//                      fileContainer
+//                          |
+//                      fileDisplay
+//                       |        |
+//           fileTitleSpace      fileHolder
+//                 |				  |
+//        fileTitleButton	     fileHolderBody
+//                                    |     	     
+//                                fileLink
+//                               |        |
+//                     fileLinkInner    fileDeleteIcon
+//
 const fileContainer = document.getElementById('file-container');
 
 const fileDisplay = document.createElement('div');
@@ -397,26 +410,5 @@ function displayList(listId, username, displayedTitle, elements) {
 
     listContainer.appendChild(listDisplay);
     
-    // const deleteIcons = listElementHolderBody.getElementsByClassName('delete-icon');
-    // console.log(deleteIcons);
-    // for (const deleteIcon of deleteIcons) {
-    //     console.log(deleteIcon);
-    //     deleteIcon.addEventListener('click', function (evt) {
-    //         evt.preventDefault();
-    //         const listItem = evt.target.closest('li');
-    //         const listItemId = listItem.id
-    //         console.log(listItemId);
-    //         listItem.remove();
-    //         fetch((`/delete-list-element/${listItemId}`), {
-    //             method: 'DELETE'
-    //         })
-    //             .then((response) => {
-    //                 return response.json();
-    //             })
-    //             .then((responseJson) => {
-    //                 console.log(responseJson);
-    //                 document.getElementById('create-list-success').innerHTML = responseJson['message'];
-    //             }); 
-    //     });  
-    // }
+
 }
