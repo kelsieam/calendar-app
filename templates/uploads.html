@@ -8,7 +8,7 @@
 {% block body %}
 
 <div class="alert alert-success" role="alert" id="create-list-success"></div>
-<!-- <div id="forms"> -->
+<div id="forms" width="30%" display="inline-block">
     <h2>file upload</h2>
     <form action="/create-file" method="POST" id="new-upload" enctype="multipart/form-data">
         What do you want this document to be called?
@@ -29,10 +29,10 @@
         <input type="submit" id="new-file-submit" value="Upload File">
     </form>
     <div id="file-container" class="accordion accordion-flush"></div>
-<!-- </div> -->
+</div>
 
 <br>
-<!-- <div id="lists"> -->
+<div id="lists" width="30%" display="inline-block">
     <h2>create a shared list</h2>
     <form action="/create-list" method="POST" id="new-list">
         <div class="form-group">
@@ -46,7 +46,7 @@
     <br>
 
     <div id="list-container" class="accordion accordion-flush"></div>
-<!-- </div> -->
+</div>
 <br>
 <br>
 <script src="/static/js/get-upload-info.js"></script>

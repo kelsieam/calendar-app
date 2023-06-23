@@ -96,21 +96,15 @@ fetch('/api/sampledata')
           $('#eventModal').modal('show');
           const modalTitle = document.getElementById('eventModalLabel');
           modalTitle.innerHTML = info.title;
+          
           let url = info['url'];
-          // console.log(url);
           let eventOrHoliday = url.split('/').slice(-2, -1)[0]
-          // console.log(eventOrHoliday)
           let id = url.split('/').pop(); // id is what's after the / in the url field
-          // console.log(id);
+
           let changeEventForm = document.getElementById('changeEventForm');
-
           const displayData = document.getElementById('show-event-data');
-
-          // const displayTitle = document.getElementById('show-event-title');
-          // displayTitle.innerHTML = `<h6>${info.title}</h6>`;
-
           const displayTime = document.getElementById('show-event-time');
-          // console.log(info.start._i, info.end._i);
+
           const dateOfEvent = new Date(info.start._i);
           const monthIndex = dateOfEvent.getMonth();
           const monthNames = ['January', 'February', 'March', 'April', 'May', 

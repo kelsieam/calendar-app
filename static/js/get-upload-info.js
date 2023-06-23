@@ -1,9 +1,11 @@
 const alertDisplay = document.getElementById('create-list-success');
 // const listsDiv = getElementById('lists');
 // listsDiv.style.display = 'inline-block';
+// listsDiv.style.width = '30%';
 
 // const formsDiv = getElementById('forms');
-// listsDiv.style.display = 'inline-block';
+// formsDiv.style.display = 'inline-block';
+// formsDiv.style.width = '30%';
 
 // this section creates the html elements to hold the 
 // file display accordion
@@ -193,17 +195,21 @@ function addFileToDisplay(fileId, fileTitle, fileLocation) {
         const targetFile = evt.target.closest('p')
         const targetFileId = targetFile.id
         console.log(targetFileId);
-        targetFile.remove();
-        fetch((`/delete-file/${targetFileId}`), {
-            method: 'DELETE'
-        })
-            .then((response) => {
-                return response.json();
+        const confirmed = confirm('Are you sure you wish to delete this?')
+        console.log('316', confirmed);
+        if (confirmed) {
+            targetFile.remove();
+            fetch((`/delete-file/${targetFileId}`), {
+                method: 'DELETE'
             })
-            .then((responseJson) => {
-                console.log(responseJson);
-                alertDisplay.innerHTML = responseJson['message']
-            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((responseJson) => {
+                    console.log(responseJson);
+                    alertDisplay.innerHTML = responseJson['message']
+                })
+        }
     })
 
     
@@ -232,9 +238,8 @@ function addFileToDisplay(fileId, fileTitle, fileLocation) {
 //
 //
 function displayList(listId, username, displayedTitle, elements) {
-    // console.log(listId);
+   
     const listContainer = document.getElementById('list-container');
-    // listContainer.style.display = 'inline-block';
 
     const listDisplay = document.createElement('div');
     listDisplay.setAttribute('id', listId);
@@ -243,7 +248,6 @@ function displayList(listId, username, displayedTitle, elements) {
     const listTitle = document.createElement('h2');
     listTitle.setAttribute('class', 'accordion-header');
     listTitle.setAttribute('id', `flush-headingOne-${listId}`)
-    // listTitle.innerText = `${displayedTitle} - added by ${username}`;
 
     const listTitleButton = document.createElement('button');
     listTitleButton.setAttribute('class', 'accordion-button collapsed')
@@ -308,23 +312,27 @@ function displayList(listId, username, displayedTitle, elements) {
 
                 const deleteIcon = newListElement.querySelector(`.delete-icon`);
                 deleteIcon.addEventListener(('click'), function(evt) {
-                    evt.preventDefault();
+                    evt.preventDefault();                    
                     const listItem = evt.target.closest('li');
                     const listItemId = listItem.id
                     console.log(listItemId);
-                    listItem.remove();
-                    fetch((`/delete-list-element/${newListElement.id}`), {
-                        method: 'DELETE'
-                    })
-                        .then((response) => {
-                            return response.json();
+                    const confirmed = confirm('Are you sure you wish to delete this?')
+                    console.log('316', confirmed);
+                    if (confirmed) {
+                        listItem.remove();
+                        fetch((`/delete-list-element/${newListElement.id}`), {
+                            method: 'DELETE'
                         })
-                        .then(responseJson => {
-                            console.log(responseJson);
-                            alertDisplay.innerHTML = responseJson['message'];
-                        })
+                            .then((response) => {
+                                return response.json();
+                            })
+                            .then(responseJson => {
+                                console.log(responseJson);
+                                alertDisplay.innerHTML = responseJson['message'];
+                            })
+                    }
                 });
-                listElementHolderBody.appendChild(newListElement);
+                listElementHolderBody.prepend(newListElement);
             })
     })
 
@@ -337,17 +345,20 @@ function displayList(listId, username, displayedTitle, elements) {
         evt.preventDefault()
         const listToDelete = evt.target.closest('.accordion-item')
         const clickedListId = listToDelete.id
-        fetch((`/delete-list/${clickedListId}`), {
-            method: 'DELETE'
-        })
-            .then((response) => {
-                return response.json()
+        const confirmed = confirm('Are you sure you want to delete this list?')
+        if (confirmed) {
+            fetch((`/delete-list/${clickedListId}`), {
+                method: 'DELETE'
             })
-            .then((responseJson) => {
-                alertDisplay.innerHTML = responseJson['message'];
-                // somehow delete the html elements for this   .remove removes node and all children
-                listToDelete.remove()
-            })
+                .then((response) => {
+                    return response.json()
+                })
+                .then((responseJson) => {
+                    alertDisplay.innerHTML = responseJson['message'];
+                    // somehow delete the html elements for this   .remove removes node and all children
+                    listToDelete.remove()
+                })
+        }
     })
     // const formAsListItem = document.createElement('li');
     // formAsListItem.setAttribute('display', 'inline')
@@ -373,23 +384,27 @@ function displayList(listId, username, displayedTitle, elements) {
             const listItem = evt.target.closest('li');
             const listItemId = listItem.id
             console.log(listItemId);
-            listItem.remove();
-            fetch((`/delete-list-element/${listItemId}`), {
-                method: 'DELETE'
-            })
-                .then((response) => {
-                    return response.json();
+            const confirmed = confirm('Are you sure you wish to delete this?')
+            console.log('316', confirmed);
+            if (confirmed) {
+                listItem.remove();
+                fetch((`/delete-list-element/${listItemId}`), {
+                    method: 'DELETE'
                 })
-                .then((responseJson) => {
-                    console.log(responseJson);
-                    alertDisplay.innerHTML = responseJson['message'];
-                })
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((responseJson) => {
+                        console.log(responseJson);
+                        alertDisplay.innerHTML = responseJson['message'];
+                    })
+            }
         });
     
         // can queryselector on parent containers
         // console.log(item.list_element_id);
         // listElement.insertAdjacentHTML('beforeend', deleteIcon)
-        listElementHolderBody.appendChild(listElement);
+        listElementHolderBody.prepend(listElement);
     });
 
     

@@ -143,43 +143,63 @@ def calendar():
 @app.route('/api/sampledata')
 def sampledata():
     all_events = []
+    all_holidays = []
+    all_def_schedules = []
 
     if 'username' in session:
         current_username = session['username']
         current_user = User.query.filter_by(username=current_username).first()
+        print(current_user.username, '********current_user')
     else: 
         return redirect('/login')
     
-    user_events = Event.query.filter_by(user_id=current_user.user_id).all()
-    family_events = Event.query.join(User).filter(
-        User.family_id == current_user.family_id, Event.shared == True
-        ).all()
-    
-    all_user_events = user_events + [event for event in family_events 
-                                if event not in user_events]
-    for event in all_user_events:
-        all_events.append(event.as_dict())
-    
+    if current_user.family_id:
+        user_events = Event.query.filter_by(user_id=current_user.user_id).all()
+        family_events = Event.query.join(User).filter(
+            User.family_id == current_user.family_id, Event.shared == True
+            ).all()
+        
+        """user's and family's events to send to calendar"""
+        all_user_events = user_events + [event for event in family_events 
+                                    if event not in user_events]
+        for event in all_user_events:
+            all_events.append(event.as_dict())
 
-    all_holidays = []
-    family_holidays = Holiday.query.join(User).filter(
+        """user's and family's holidays to send to calendar"""
+        family_holidays = Holiday.query.join(User).filter(
+            User.family_id == current_user.family_id).all()
+
+        for holiday in family_holidays:    
+            all_holidays.append(holiday.as_dict())
+
+        """user's and family's default schedules to send to calendar"""
+        family_def_schedules = DefaultSchedule.query.join(User).filter(
         User.family_id == current_user.family_id).all()
-
-    for holiday in family_holidays:    
-        all_holidays.append(holiday.as_dict())
-
-
-    all_def_schedules = []
-    family_def_schedules = DefaultSchedule.query.join(User).filter(
-        User.family_id == current_user.family_id).all()
     
-    for def_schedule in family_def_schedules:
-        all_def_schedules.append(def_schedule.as_dict())
+        for def_schedule in family_def_schedules:
+            all_def_schedules.append(def_schedule.as_dict())
 
-    all_users = User.query.all()
 
-    for user in all_users:
-        user = user.as_dict()
+    else:
+        """user's events to send to calendar"""
+        user_events = Event.query.filter_by(user_id=current_user.user_id).all()
+        for event in user_events:
+            all_events.append(event.as_dict())
+
+        """user's holidays to send to calendar"""
+        user_holidays = Holiday.query.filter_by(user_id=current_user.user_id).all()
+        for holiday in user_holidays:
+            all_holidays.append(holiday.as_dict())
+
+        """user's default schedules to send to calendar"""
+        user_def_schedules = DefaultSchedule.query.filter_by(user_id=current_user.user_id).all()
+        for def_schedule in user_def_schedules:
+            all_def_schedules.append(def_schedule.as_dict())
+    
+
+    # all_users = User.query.all()
+    # for user in all_users:
+    #     user = user.as_dict()
 
     return {'all_events': all_events, 'all_holidays': all_holidays, 
             'all_def_schedules': all_def_schedules}
