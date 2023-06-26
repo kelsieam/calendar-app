@@ -8,6 +8,106 @@ let defaultSchedules = [];
 let otherParentDefaultSchedules = [];
 let holidayDict = {};
 
+const parentingScheduleButton = document.getElementById('parenting-schedule-submit');
+parentingScheduleButton.addEventListener(('click'), function(evt) {
+  evt.preventDefault();
+  const createPSFormData = new FormData(document.getElementById('parenting-schedule-form'));
+  fetch(('/create-parenting-schedule'), {
+    body: createPSFormData,
+    method: 'POST'
+  })
+    .then((response) => {
+        return response.json();
+    })
+    .then((responseJson) => {
+        console.log(responseJson);
+        location.reload();
+    })
+})
+
+const eventButton = document.getElementById('event-submit');
+eventButton.addEventListener(('click'), function(evt) {
+  evt.preventDefault();
+  const createEventFormData = new FormData(document.getElementById('event-form'));
+  fetch(('/create-event'), {
+    body: createEventFormData,
+    method: 'POST'
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((responseJson) => {
+      console.log(responseJson);
+      location.reload();
+    })
+
+})
+
+
+const holidayButton = document.getElementById('holiday-submit');
+holidayButton.addEventListener(('click'), function(evt) {
+  evt.preventDefault();
+  const createHolidayFormData = new FormData(document.getElementById('holiday-form'));
+  const changeDefSchedFormData = new FormData(document.getElementById('new-default-schedule-form'))
+  fetch(('/create-holiday'), {
+    body: createHolidayFormData,
+    method: 'POST'
+  })
+    .then((holidayResponse) => {
+      return holidayResponse.json();
+    })
+    .then((holidayResponseJson) => {
+      console.log(holidayResponseJson);
+      if (holidayResponseJson['change_default_schedule'] === true) {
+        fetch(('/create-new-default-schedule'), {
+          body: changeDefSchedFormData,
+          method: 'POST'
+        })
+          .then((defSchedResponse) => {
+            return defSchedResponse.json();
+          })
+          .then((defSchedResponseJson) => {
+            console.log(defSchedResponseJson);
+            location.reload();
+          })
+      }
+    })
+
+
+
+})
+
+// hiding and displaying change default schedule form based on which button is clicked
+const changeDefaultScheduleInputs = document.getElementsByName('change-default-schedule')
+const defaultScheduleSection = document.getElementById('change-default-schedule-section');
+defaultScheduleSection.style.display = 'none';
+
+changeDefaultScheduleInputs.forEach(radioInput => {
+    radioInput.addEventListener('change', handleRadioChange);
+});
+
+function handleRadioChange(event) {
+    console.log(event.target.id, event.target.value);
+    console.log(defaultScheduleSection.querySelectorAll
+      ('input, select, textarea'));
+    
+    if (this.value === 'true') {
+      defaultScheduleSection.style.display = 'block';  // show
+      defaultScheduleSection.querySelectorAll
+        ('input, select, textarea').forEach(field => {
+        field.setAttribute('required', true); // makes it required if yes button checked
+      });
+
+    } else {
+      defaultScheduleSection.style.display = 'none';   // hide
+      defaultScheduleSection.querySelectorAll
+        ('input, select, textarea').forEach(field => {
+        field.removeAttribute('required'); // not required otherwise
+      });
+    }
+}
+
+
 fetch('/api/sampledata')
   .then((response) => {
     return response.json();
@@ -17,7 +117,23 @@ fetch('/api/sampledata')
     const allEvents = data.all_events;
     const allHolidays = data.all_holidays;
     const allDefaultSchedules = data.all_def_schedules;
-    const allUsers = data.all_users;
+    if (allDefaultSchedules.length === 0) {
+      document.getElementById('add-event').style.display = 'none';
+      document.getElementById('add-event-tab-tab').style.display = 'none';
+
+      document.getElementById('add-holiday').style.display = 'none';
+      document.getElementById('add-holiday-tab-tab').style.display = 'none';
+    }
+    
+    console.log(allDefaultSchedules);
+    console.log(allDefaultSchedules.length);
+    if (allDefaultSchedules.length > 0) {
+      document.getElementById('parenting-schedule').style.display = 'none';
+      document.getElementById('parenting-schedule-tab-tab').style.display = 'none';
+
+    }
+    // const allUsers = data.all_users;
+
 
     //$(document).ready(function() {
       
@@ -92,7 +208,7 @@ fetch('/api/sampledata')
         },
 
         eventClick: function(info) {
-          console.log(info);
+          // console.log(info);
           $('#eventModal').modal('show');
           const modalTitle = document.getElementById('eventModalLabel');
           modalTitle.innerHTML = info.title;
@@ -102,6 +218,7 @@ fetch('/api/sampledata')
           let id = url.split('/').pop(); // id is what's after the / in the url field
 
           let changeEventForm = document.getElementById('changeEventForm');
+
           const displayData = document.getElementById('show-event-data');
           const displayTime = document.getElementById('show-event-time');
 
@@ -120,6 +237,14 @@ fetch('/api/sampledata')
                     Event description:
                     <br>${info.description}
           `;
+          
+          const eventChangeSection = document.getElementById('event-change-section');
+          const eventDeleteSection = document.getElementById('event-delete-section');
+          if (data.current_user.is_child === true) {
+            eventChangeSection.hidden = true;
+            eventDeleteSection.hidden = true;
+          }
+
 
           changeEventForm.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -160,7 +285,21 @@ fetch('/api/sampledata')
           });
 
           let deleteButton = document.getElementById('delete-button');
+          const user = data.current_user
+          if (user.is_child === true) {
+            deleteButton.hidden = true;
+          }
           deleteButton.addEventListener('click', function() {
+            // const user = data.current_user;
+            // if (user.is_child === true) {
+            //     fetch('/child-profile')
+            //       .then((response) => {
+            //         return response.json()
+            //       })
+            //       .then((responseJson) => {
+            //         alert(responseJson['message'])
+            //       })
+            // }
             let confirmed = confirm('Are you sure you want to delete this event?')
             if (confirmed) {
               let urlForDelete;

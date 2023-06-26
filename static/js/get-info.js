@@ -1,6 +1,6 @@
-// console.log('get-info.js')
+console.log('get-info.js')
 
-// // const holidayButton = document.querySelector('#holidays input[type="submit"]');
+// const holidayButton = document.querySelector('#holidays input[type="submit"]');
 // const changeDefaultScheduleInputs = document.getElementsByName('change-default-schedule')
 // const defaultScheduleSection = document.getElementById('change-default-schedule');
 
@@ -28,3 +28,19 @@
 
 // }
 
+// const parentingScheduleButton = document.getElementById('parenting-schedule-submit');
+// parentingScheduleButton.addEventListener(('click'), function(evt) {
+//     evt.preventDefault();
+//     const createPSFormData = new FormData(document.getElementById('parenting-schedule'));
+//     fetch(('/create-parenting-schedule'), {
+//         body: createPSFormData,
+//         method: 'POST'
+//     })
+//         .then((response) => {
+//             return response.json();
+//         })
+//         .then((responseJson) => {
+//             console.log(responseJson);
+
+//         })
+// })

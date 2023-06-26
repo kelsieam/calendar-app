@@ -131,6 +131,7 @@ class User(db.Model):
     files = db.relationship('File', back_populates='user')
     lists = db.relationship('List', back_populates='user')
     list_elements = db.relationship('ListElement', back_populates='user')
+    messages = db.relationship('Message', back_populates='user')
 
     def __repr__(self):
         return f'<User user_id={self.user_id} username={self.username}>'
@@ -200,7 +201,6 @@ class List(db.Model):
                         autoincrement=True,
                         primary_key=True)
     title = db.Column(db.String,
-                      unique=True,
                       nullable=False)
     user_id = db.Column(db.Integer, 
                         db.ForeignKey('users.user_id'), 
@@ -240,6 +240,31 @@ class ListElement(db.Model):
         return f'<ListElement list_element_id={self.list_element_id}, list_id={self.list_id}>'
 
 
+class Message(db.Model):
+    """stores messages to display in shared message box"""
+    def as_dict(self):
+        return {
+            'message_id': self.message_id,
+            'content': self.content,
+            'user_id': self.user_id,
+            'username': self.user.username,
+            'submit_time': self.submit_time
+        }
+    __tablename__ = 'messages'
+
+    message_id = db.Column(db.Integer,
+                        autoincrement=True,
+                        primary_key=True)
+    content = db.Column(db.String,
+                        nullable=False)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey('users.user_id'))
+    submit_time = db.Column(db.Integer)
+    
+    user = db.relationship('User', back_populates='messages')
+
+    def __repr__(self):
+        return f'<Message message_id={self.message_id}, content={self.content}>'
 
 def connect_to_db(flask_app, db_uri="postgresql:///calendar", echo=False):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri

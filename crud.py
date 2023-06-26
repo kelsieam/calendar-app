@@ -1,6 +1,6 @@
 """CRUD operations."""
 
-from model import db, Event, DefaultSchedule, Holiday, User, Family, List, ListElement, File, connect_to_db
+from model import db, Event, DefaultSchedule, Holiday, User, Family, List, ListElement, File, Message,connect_to_db
 
 
 # Functions start here!
@@ -62,6 +62,12 @@ def create_file(location, title, comment, user_id):
     return file
 
 
+def create_message(content, user_id, submit_time):
+    message = Message(content=content, user_id=user_id, submit_time=submit_time)
+
+    return message
+
+
 def get_calendar_event_by_id(id):
     return Event.query.filter_by(event_id=id).first()
 
@@ -76,6 +82,9 @@ def get_db_list_element_by_id(id):
 
 def get_db_file_by_id(id):
     return File.query.filter_by(file_id=id).first()
+
+def get_db_message_by_id(id):
+    return Message.query.filter_by(message_id=id).first()
 
 if __name__ == '__main__':
     from server import app

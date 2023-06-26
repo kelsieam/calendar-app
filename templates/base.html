@@ -16,9 +16,11 @@
     </p>
     {% endfor %}
     {% if 'username' in session and username is not none %}
-    <div id="username">{{ username }}</div>
+    <div id="username" display="inline-block">{{ username }}</div>
     <h3>Welcome, {{ username }}!</h3>
-        <h4>Family Members:</h4>
+      {% if family_members|length > 0 %}
+      <h4>Family Members:</h4>
+      {% endif %}
         <ul>
             {% for member in family_members %}
                 {% if member.username != username %}
@@ -30,6 +32,17 @@
     {% else %}
       <h5>You are not logged in</h5>
     {% endif %}
+    
+    <div id="create-family-section" display="inline-block">
+      <h4>Add to your family group</h4>
+        <form action="/create-family" method="POST" id="connect-users">
+        What is the username of the person you'd like to connect with?
+        <br>
+        <input type="text" id="username-to-connect" name="username-to-connect">
+        <br>
+        <input type="submit" label="Connect">
+        </form>
+    </div>
     {% block body %}{% endblock %}
 
     {% block after_body %}{% endblock %}

@@ -36,6 +36,17 @@ model.db.session.add_all(users)
 model.db.session.commit()
 
 
+messages = [
+    crud.create_message("hi I'm writing in a message box", 1, 1687677141),
+    crud.create_message("no me", 5, 1687677020),
+    crud.create_message("no u", 1, 1687677100)
+]
+
+model.db.session.add_all(messages)
+model.db.session.commit()
+
+
+
 lists = [
     crud.create_list('groceries to buy', 1),
     crud.create_list('things to remember', 1)
