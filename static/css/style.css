@@ -1,10 +1,30 @@
-#display-info {
+/* #display-info {
     margin: auto;
     text-align: center;
   }
 
-  #info-buttons {
+#info-buttons {
     margin: 12px auto;
     text-align: center;
     flex-wrap: wrap;
-  }
+  } */
+
+#message-holder {
+  word-break: normal;
+  overflow-wrap:break-word;
+  max-width: 400px;
+  overflow-y: scroll;
+  max-height: 500px;
+  padding-right: 5px;
+}
+
+#alert-holder {
+  height: 50px;
+  margin: 10px;
+}
+
+body {
+  background-image: url(/static/uploads/eric-rothermel-FoKO4DpXamQ-unsplash.jpg);
+  background-size: 100%;
+  background-blend-mode: darken;
+}

@@ -8,6 +8,18 @@ let defaultSchedules = [];
 let otherParentDefaultSchedules = [];
 let holidayDict = {};
 
+// document.getElementById('add-to-calendar').style.display = 'none';
+// document.getElementById('add-to-calendarContent').style.display = 'none';
+// document.getElementById('schedule-add-to-calendar').style.display = 'none';
+// document.getElementById('schedule-add-to-calendarContent').style.display = 'none';
+
+const parentingScheduleColumn = document.getElementById('parenting-schedule-column')
+parentingScheduleColumn.style.display = 'none';
+
+const eventHolidayColumn = document.getElementById('event-holiday-column')
+eventHolidayColumn.style.display = 'none';
+
+
 const parentingScheduleButton = document.getElementById('parenting-schedule-submit');
 parentingScheduleButton.addEventListener(('click'), function(evt) {
   evt.preventDefault();
@@ -43,7 +55,6 @@ eventButton.addEventListener(('click'), function(evt) {
 
 })
 
-
 const holidayButton = document.getElementById('holiday-submit');
 holidayButton.addEventListener(('click'), function(evt) {
   evt.preventDefault();
@@ -68,11 +79,10 @@ holidayButton.addEventListener(('click'), function(evt) {
           })
           .then((defSchedResponseJson) => {
             console.log(defSchedResponseJson);
-            location.reload();
           })
       }
+      location.reload();
     })
-
 
 
 })
@@ -118,18 +128,22 @@ fetch('/api/sampledata')
     const allHolidays = data.all_holidays;
     const allDefaultSchedules = data.all_def_schedules;
     if (allDefaultSchedules.length === 0) {
-      document.getElementById('add-event').style.display = 'none';
-      document.getElementById('add-event-tab-tab').style.display = 'none';
+      // document.getElementById('schedule-add-to-calendar').style.display = 'inline';
+      // document.getElementById('schedule-add-to-calendarContent').style.display = 'inline';
+      parentingScheduleColumn.style.display = 'inline';
 
-      document.getElementById('add-holiday').style.display = 'none';
-      document.getElementById('add-holiday-tab-tab').style.display = 'none';
+      // document.getElementById('add-holiday').style.display = 'none';
+      // document.getElementById('add-holiday-tab-tab').style.display = 'none';
     }
     
     console.log(allDefaultSchedules);
     console.log(allDefaultSchedules.length);
     if (allDefaultSchedules.length > 0) {
-      document.getElementById('parenting-schedule').style.display = 'none';
-      document.getElementById('parenting-schedule-tab-tab').style.display = 'none';
+      console.log('in length if')
+      console.log(eventHolidayColumn)
+      // document.getElementById('add-to-calendar').style.display = 'block';
+      // document.getElementById('add-to-calendarContent').style.display = 'block';
+      eventHolidayColumn.style.display = 'inline';
 
     }
     // const allUsers = data.all_users;
@@ -184,28 +198,29 @@ fetch('/api/sampledata')
         eventSources: [
         {
           editable: true,
-          events: events
+          events: events,
+          color: '#330F0A'
         },
         {
           events: holidays,
           editable: true,
-          color: '#378006'
+          color: '#51513D'
         },
         {
           events: defaultSchedules,
           rendering: 'background',
-          backgroundColor: '#c2c2d6',
+          backgroundColor: '#D0B8AC',
         },
         {
           events: otherParentDefaultSchedules,
           rendering: 'background',
-          backgroundColor: '#ffcc99'
+          backgroundColor: '#EFE5DC'
         }
         ],
         
-        eventMouseover: function (info) {
-          console.log('mouseover', info);
-        },
+        // eventMouseover: function (info) {
+        //   console.log('mouseover', info);
+        // },
 
         eventClick: function(info) {
           // console.log(info);

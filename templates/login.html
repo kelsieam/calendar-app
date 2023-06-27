@@ -1,36 +1,121 @@
 {% extends 'base.html' %}
 {% block head %}
-<link rel="stylesheet" href='/static/css/style.css' />
+<!-- <link rel="stylesheet" href='/static/css/style.css' /> -->
+<script src='https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js'></script>
 {% endblock %}
 {% block body %}
-<h1>Co-parenting Calendar</h1>
-<form action="/login" method="POST">
-    <h2>Log In</h2>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br>
-    <input type="submit" value="Log In">
-</form>
-<br>
-<form action="/signup" method="POST">
-    <h2>Create an Account</h2>
-    <label for="first-name">First Name:</label>
-    <input type="text" id="first-name" name="first-name" required>
-    <br>
-    <label for="new-username">Username:</label>
-    <input type="text" id="new-username" name="new-username" required>
-    <br>
-    <label for="new-password">Password:</label>
-    <input type="password" id="new-password" name="new-password" required>
-    <br>
-    <label for="is-child">Are you creating a child account?</label>
-    <input type="checkbox" id="is-child" name="is-child">
-    <br>
-    <input type="submit" value="Create Account">
-    
-</form>
+<style>
+body {
+    background-image: url(/static/uploads/eric-rothermel-FoKO4DpXamQ-unsplash.jpg);
+    background-size: 100%;
+    background-blend-mode: darken;
+  }
+</style>
+<div class="container login">
+<div class="login-header" style="position: absolute; top: 50%; left: 40%; background-color: white; padding: 10px; border-radius:15px;">
+    <h1>Co-Parenting Calendar</h1>
+<!-- </div> -->
+<!-- <div class="login-buttons" style="position: absolute; 
+                            top: 58%; 
+                            left: 40%;
+                            background-color: white;"> -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Log in</button>
+  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModal">Log in</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          </button>
+        </div>
+        <div class="modal-body">
+            <form action="/login" method="POST" id="login-form">
+                <h2>Log In</h2>
+                <div class="form-group row">
+                    <div class="col-sm-4">              
+                        <label for="username">Username:</label>
+                    </div>
+
+                    <div class="col-sm-8"> 
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <label for="password">Password:</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Log in</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</button>
+  <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signupModal">Sign Up</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="/signup" method="POST" id="signup-form">
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <label for="first-name">First Name:</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="text" id="first-name" name="first-name" required>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <label for="new-username">Username:</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="text" id="new-username" name="new-username" required>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <label for="new-password">Password:</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="password" id="new-password" name="new-password" required>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group row">
+                    <div class="col-sm-4">
+                        <label for="is-child">Are you creating a child account?</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="checkbox" class="form-check-input" id="is-child" name="is-child">
+                    </div>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
 
 {% endblock %}

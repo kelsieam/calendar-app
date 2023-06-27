@@ -1,36 +1,61 @@
 {% extends 'base.html' %}
 {% block head %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script> -->
 <script src="https://kit.fontawesome.com/6429eb5f97.js" crossorigin="anonymous"></script>
 
 {% endblock %}
 {% block body %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Calendar</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/uploads">Shared Info</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Log Out</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+</nav>
 
-<div class="alert alert-success" role="alert" id="alert-display"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <div id="alert-holder">
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container">
     <div class="row">
       <div class="col-sm">
         
             <h2>file upload</h2>
             <form action="/create-file" method="POST" id="new-upload" enctype="multipart/form-data">
-                What do you want this document to be called?
+                <br>
+                <input type="file" class="form control file" id="file" name="file">                
+                <br>
+                Title:
                 <br>
                 <input type="text" id="file-title" name="file-title">
                 <br>
-                <br>
-                Please select a file to upload:
-                <br>
-                <input type="file" class="form control file" id="file" name="file">
-                <br>
-                <br>
-                Please add any comments about this upload:
+                <!-- Please select a file to upload: -->
+                Comments:
                 <br>
                 <input type="text" id="file-comment" name="file-comment">
                 <br>
                 <br>
+                
                 <input type="submit" id="new-file-submit" value="Upload File">
             </form>
+            <br>
+            <br>
             <div id="file-container" class="accordion accordion-flush"></div>
         
         </div>
@@ -38,6 +63,7 @@
         
             <h2>create a shared list</h2>
             <form action="/create-list" method="POST" id="new-list">
+              <br>
                 <div class="form-group">
                     <label for="list-title">List Title:</label>
                     <input type="text" id="list-title" name="list-title">
@@ -52,18 +78,18 @@
         
         </div>
         <div class="col-sm">
-            <h2>&nbsp;&nbsp;family messages</h2>
+            <h2>family messages</h2>
             <form action="/create-message" id="new-message" method="POST">
                 <div class="form-group row">
-                  <label for="staticMessages" class="col-sm-1 col-form-label"></label>
-                  <div class="col-sm-11">
+                  <label for="staticMessages"></label>
+                  <div class="col-sm">
                     <input type="text" readonly class="form-control-plaintext">
                     <div id="message-holder"></div>
                     <!-- value="email@example.com" -->
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label for="inputMessage" class="col-sm-1 col-form-label"></label>
+                  <label for="inputMessage"></label>
                   <div class="col-sm-11">
                     <input type="text" class="form-control" id="inputMessage" name="inputMessage">
                   </div>

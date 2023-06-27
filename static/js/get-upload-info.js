@@ -1,10 +1,31 @@
-const alertDisplay = document.getElementById('alert-display');
-// if (alertDisplay.innerHTML === '') {
-//     alertDisplay.style.display = 'none';
-// }
+// const alertDisplay = document.getElementById('alert-display');
+// alertDisplay.style.display = 'none';
+// if (alertDisplay.innerHTML != '') {
+//     alertDisplay.style.display = 'block';
+// } 
+const alertHolder = document.getElementById('alert-holder');
+
+function createAlertDisplay(success, message='') {
+    if (document.getElementById('alert-display')) {
+        document.getElementById('alert-display').remove();
+    }
+    const alertDisplay = document.createElement('div');
+    if (success === true) {
+        alertDisplay.setAttribute('class', 'alert alert-success alert-dismissable fade show');
+    } else {
+        alertDisplay.setAttribute('class', 'alert alert-warning alert-dismissable fade show');
+    }
+    alertDisplay.setAttribute('role', 'alert');
+    alertDisplay.setAttribute('id', 'alert-display');
+
+    alertDisplay.innerHTML = message
+
+    alertHolder.appendChild(alertDisplay);
+}
 
 const messageDisplay = document.getElementById('message-holder');
-
+// messageDisplay.scrollTop = messageDisplay.scrollHeight;
+// console.log(messageDisplay.innerHTML);
 
 // this section creates the html elements to hold the 
 // file display accordion
@@ -23,10 +44,13 @@ const messageDisplay = document.getElementById('message-holder');
 //
 //
 const fileContainer = document.getElementById('file-container');
+// fileContainer.setAttribute('display', 'none');
 
 const fileDisplay = document.createElement('div');
 fileDisplay.setAttribute('id', 'flush-headingOne');
 fileDisplay.setAttribute('class', 'accordion-item');
+
+// fileDisplay.style.display = 'none';
 
 const fileTitleSpace = document.createElement('h2');
 fileTitleSpace.setAttribute('class', 'accordion-header');
@@ -64,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('in get-upload-info.js')
     fetch(('/api/uploads'))
         .then(existingUploads => {
-            console.log(existingUploads);
+            // console.log(existingUploads);
             return existingUploads.json();
             
         })
@@ -102,9 +126,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // console.log(currentUser);
             // console.log(currentUsername);
             const allMessages = existingUploadsJson['all_messages_json'];
-            console.log(allMessages);
+            // console.log(allMessages);
             allMessages.sort((a, b) => a.message_id - b.message_id);
-            console.log(allMessages);
+            // console.log(allMessages);
             allMessages.forEach(message => {
                 const content = message.content;
                 const username = message.username;
@@ -139,7 +163,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // console.log(userId)
 
                 if (listTitle === '') {
-                    alertDisplay.innerHTML = 'Please enter a title for the list'
+                    createAlertDisplay(false, 'Please enter a title for the list')
+                    // alertDisplay.innerHTML = 
+              
                 } else {
 
                     const listDisplay = {
@@ -162,7 +188,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         })
                         .then((responseJson) => {
                             // console.log(responseJson);
-                            alertDisplay.innerHTML = responseJson['message']
+                            // alertDisplay.innerHTML = responseJson['message']
+                            createAlertDisplay(responseJson['success'], responseJson['message'])
                             const listId = responseJson['list_id']
                             const username = responseJson['username']
                             let listElements = []
@@ -200,7 +227,8 @@ messageSubmit.addEventListener(('click'), function(evt) {
         })
         .then((responseJson) => {
             console.log(responseJson);
-            alertDisplay.innerHTML = responseJson['message'];
+            createAlertDisplay(responseJson['success'], responseJson['message'])
+            // alertDisplay.innerHTML = responseJson['message'];
             const content = responseJson['content'];
             const username = responseJson['username'];
             document.getElementById('inputMessage').value = '';
@@ -215,12 +243,15 @@ function displayMessages(content, username, submitTime) {
     let pluralTime = '';
     if (timeElapsed < 60) {
         const timeElapsedSeconds = timeElapsed;
-        if (timeElapsedSeconds > 1) {
-            pluralTime = 's';
-        }
+        // if (timeElapsedSeconds > 1) {
+        //     pluralTime = 's';
+        // }
+        // messageDisplay.innerHTML = messageDisplay.innerHTML + `
+        // <small>${timeElapsedSeconds} second${pluralTime} ago - </small><b>${username}</b>:`
+        // + `<br>${content}` + `<br>`;
         messageDisplay.innerHTML = messageDisplay.innerHTML + `
-        <small>${timeElapsedSeconds} second${pluralTime} ago - </small><b>${username}</b>:`
-        + `<br>${content}` + `<br>`
+        <small>less than a minute ago - <b>${username}</b></small>:`
+        + `<br>${content}` + `<br>`;
     }
     else if (timeElapsed >= 60 && timeElapsed <3600) {
         const timeElapsedMinutes = Math.floor((timeElapsed/60));
@@ -229,63 +260,59 @@ function displayMessages(content, username, submitTime) {
             pluralTime = 's';
         }
         messageDisplay.innerHTML = messageDisplay.innerHTML + `
-        <small>${timeElapsedMinutes} minute${pluralTime} ago - </small><b>${username}</b>:`
-        + `<br>${content}` + `<br>`
+        <small>${timeElapsedMinutes} minute${pluralTime} ago - <b>${username}</b></small>:`
+        + `<br>${content}` + `<br>`;
     } 
     else if (timeElapsed >=3600 && timeElapsed < 86400) {
         const timeElapsedHours = Math.floor((timeElapsed/3600));
-        // let pluralTime = '';
         if (timeElapsedHours > 1) {
             pluralTime = 's';
         }
         messageDisplay.innerHTML = messageDisplay.innerHTML + `
-        <small>${timeElapsedHours} hour${pluralTime} ago - </small><b>${username}</b>:`
-        + `<br>${content}` + `<br>`
+        <small>${timeElapsedHours} hour${pluralTime} ago - <b>${username}</b></small>:`
+        + `<br>${content}` + `<br>`;
     } 
     else if (timeElapsed >= 86400 && timeElapsed < 604800) {
         const timeElapsedDays = Math.floor((timeElapsed/86400));
-        // let pluralTime = '';
         if (timeElapsedDays > 1) {
             pluralTime = 's';
         }
         messageDisplay.innerHTML = messageDisplay.innerHTML + `
-        <small>${timeElapsedDays} day${pluralTime} ago - </small><b>${username}</b>:`
-        + `<br>${content}` + `<br>`
+        <small>${timeElapsedDays} day${pluralTime} ago - <b>${username}</b></small>:`
+        + `<br>${content}` + `<br>`;
     }
     else if (timeElapsed >= 604800 && timeElapsed < 2592000) {
         const timeElapsedWeeks = Math.floor((timeElapsed/604800));
-        // let pluralTime = '';
         if (timeElapsedWeeks > 1) {
             pluralTime = 's';
         }
         messageDisplay.innerHTML = messageDisplay.innerHTML + `
-        <small>${timeElapsedWeeks} week${pluralTime} ago - </small><b>${username}</b>:`
+        <small>${timeElapsedWeeks} week${pluralTime} ago - <b>${username}</b></small>:`
         + `<br>${content}` + `<br>`
     }
     else if (timeElapsed >= 2592000 && timeElapsed < timeElapsed < 31536000) {
         const timeElapsedMonths = Math.floor((timeElapsed/2592000));
-        // let pluralTime = '';
         if (timeElapsedMonths > 1) {
             pluralTime = 's';
         }
         messageDisplay.innerHTML = messageDisplay.innerHTML + `
-        <small>${timeElapsedMonths} month${pluralTime} ago - </small><b>${username}</b>:`
-        + `<br>${content}` + `<br>`
+        <small>${timeElapsedMonths} month${pluralTime} ago - <b>${username}</b></small>:`
+        + `<br>${content}` + `<br>`;
     }
     else if (timeElapsed >= 31536000) {
         const timeElapsedYears = Math.floor((timeElapsed/31536000));
-        // let pluralTime = '';
         if (timeElapsedYears > 1) {
             pluralTime = 's';
         }
         messageDisplay.innerHTML = messageDisplay.innerHTML + `
-        <small>${timeElapsedYears} year${pluralTime} ago - </small><b>${username}</b>:`
-        + `<br>${content}` + `<br>`
+        <small>${timeElapsedYears} year${pluralTime} ago - <b>${username}</b></small>:`
+        + `<br>${content}` + `<br>`;
         
     }
-    // messageDisplay.innerHTML = messageDisplay.innerHTML + `
-    //     <small>${timeElapsed} seconds ago - </small><b>${username}</b>:`
-    //     + `<br>${content}` + `<br>`
+
+    // keeps scrollbar for messageDisplay scrolled to the bottom
+    messageDisplay.scrollTop = messageDisplay.scrollHeight;
+    // console.log(messageDisplay.innerHTML);
 
 }
 
@@ -302,7 +329,8 @@ fileSubmit.addEventListener(('click'), function(evt) {
         })
         .then((responseJson) => {
             console.log(responseJson);
-            alertDisplay.innerHTML = responseJson['message'];
+            createAlertDisplay(responseJson['success'], responseJson['message'])
+            // alertDisplay.innerHTML = responseJson['message'];
             const fileId = responseJson['file_id'];
             const fileTitle = responseJson['file_title'];
             const fileLocation = responseJson['file_location'];
@@ -351,7 +379,8 @@ function addFileToDisplay(fileId, fileTitle, fileLocation, isChild) {
                     })
                     .then((responseJson) => {
                         console.log(responseJson);
-                        alertDisplay.innerHTML = responseJson['message']
+                        createAlertDisplay(responseJson['success'], responseJson['message'])
+                        // alertDisplay.innerHTML = responseJson['message']
                         if (responseJson['success']) {
                             targetFile.remove();
                         }
@@ -453,7 +482,8 @@ function displayList(listId, username, displayedTitle, elements, isChild) {
             }))
             .then((newElementJson) => {
                 console.log(newElementJson);
-                alertDisplay.innerHTML = newElementJson['message'];
+                createAlertDisplay(newElementJson['success'], newElementJson['message'])
+                // alertDisplay.innerHTML = newElementJson['message'];
                 const newListElement = document.createElement('li');
                 newListElement.setAttribute('id', newElementJson['list_element_id'])
                 newListElement.innerHTML = `
@@ -483,7 +513,8 @@ function displayList(listId, username, displayedTitle, elements, isChild) {
                                 })
                                 .then(responseJson => {
                                     console.log(responseJson);
-                                    alertDisplay.innerHTML = responseJson['message'];
+                                    createAlertDisplay(responseJson['success'], responseJson['message'])
+                                    // alertDisplay.innerHTML = responseJson['message'];
                                 })
                         }
                     });
@@ -512,7 +543,8 @@ function displayList(listId, username, displayedTitle, elements, isChild) {
                         return response.json()
                     })
                     .then((responseJson) => {
-                        alertDisplay.innerHTML = responseJson['message'];
+                        createAlertDisplay(responseJson['success'], responseJson['message'])
+                        // alertDisplay.innerHTML = responseJson['message'];
                         if (responseJson['success']) {
                             listToDelete.remove();
                         }
@@ -562,7 +594,8 @@ function displayList(listId, username, displayedTitle, elements, isChild) {
                         })
                         .then((responseJson) => {
                             console.log(responseJson);
-                            alertDisplay.innerHTML = responseJson['message'];
+                            createAlertDisplay(responseJson['success'], responseJson['message'])
+                            // alertDisplay.innerHTML = responseJson['message'];
                             console.log(responseJson);
                             if (responseJson['success']) {
                                 listItem.remove();

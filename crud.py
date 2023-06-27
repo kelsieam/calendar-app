@@ -3,7 +3,6 @@
 from model import db, Event, DefaultSchedule, Holiday, User, Family, List, ListElement, File, Message,connect_to_db
 
 
-# Functions start here!
 def create_event(start, end, label, description, shared, with_parent, user_id):
     """Create and return an event."""
 

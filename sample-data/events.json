@@ -34,6 +34,15 @@
         "shared": false,
         "with_parent": 2,
         "user_id": 1
+    },
+    {
+        "start": "2023-07-12 10:00:00",
+        "end": "2023-07-12 13:00:00",
+        "label": "demo day",
+        "description": "wow I should probably do something to get ready for this",
+        "shared": true,
+        "with_parent": 1,
+        "user_id": 1
     }
     
 ]

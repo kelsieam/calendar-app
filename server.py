@@ -133,12 +133,12 @@ def signup():
         return redirect('/inputinfo')
 
 
-@app.route('/calendar')
-def calendar():
-    if not is_user_logged_in():
-        flash('Please log in to access the calendar.')
-        return redirect('/login')
-    return render_template('calendar.html')
+# @app.route('/calendar')
+# def calendar():
+#     if not is_user_logged_in():
+#         flash('Please log in to access the calendar.')
+#         return redirect('/login')
+#     return render_template('calendar.html')
 
 
 @app.route('/api/sampledata')
@@ -513,15 +513,14 @@ def create_family_table():
                 ## without permission
                 # db.session.add(new_family)
                 # db.session.commit()
-                flash("successfully connected")
+                # flash("successfully connected")
             db.session.add_all([current_user, user_to_connect_with])
             db.session.commit()
 
         else:
-            flash('User not found. Please check their username and try again')
+            return {'success': False, 'message': 'User not found. Please check their username and try again'}
 
     else:
-        flash('Must be logged in')
         return redirect('/login')
     
     return redirect('/')
