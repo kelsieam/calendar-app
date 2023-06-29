@@ -9,22 +9,22 @@
     flex-wrap: wrap;
   } */
 
-#message-holder {
-  word-break: normal;
-  overflow-wrap:break-word;
-  max-width: 400px;
-  overflow-y: scroll;
-  max-height: 500px;
-  padding-right: 5px;
+body {
+  font-family: 'Roboto', sans-serif;
 }
+
+
 
 #alert-holder {
   height: 50px;
   margin: 10px;
 }
 
-body {
-  background-image: url(/static/uploads/eric-rothermel-FoKO4DpXamQ-unsplash.jpg);
-  background-size: 100%;
-  background-blend-mode: darken;
-}
+/* #event-holiday-column {
+  background-color: #D0B8AC;
+} */
+
+/* #family-connect-div {
+  background-color: #D088AC;
+} */
+

@@ -3,11 +3,78 @@
 <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script> -->
 <script src="https://kit.fontawesome.com/6429eb5f97.js" crossorigin="anonymous"></script>
-
 {% endblock %}
 {% block body %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
+
+
+
+<style>
+  .col-sm-4 {
+    background-color: yellow;
+  }
+
+  .form-col {
+    margin-right: 10px; 
+    width: 32%; 
+    height: auto;
+    background-color: white;
+    display: inline-block;
+  }
+
+  .top-row {
+    padding-top: 10px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+
+  .bottom-row {
+    padding-bottom: 10px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+
+  .message-holder {
+      word-break: normal;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      overflow-y: auto;
+      max-height: 450px;
+      min-height: 450px;
+      padding: 5px;
+      background-color: white;
+      border-radius: 10px;
+      margin: -7px;
+    }
+
+  body {
+    background-color: #fffbf0;
+  }
+  
+  .card {
+    height: 600px;
+    margin: 5px;
+  }
+
+  .content-block {
+    overflow-y: auto;
+    max-height: 450px;
+    padding: 5px;
+  }
+
+  .list-item {
+  display: flex;
+  align-items: center;
+  }
+
+  .delete-icon {
+  margin-left: auto;
+  }
+
+  /* style="border: 3px; border-color: #119da4" */
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #fffbf0">
+    <div class="container">
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
@@ -25,7 +92,7 @@
 </nav>
 
 <div class="container">
-    <div class="row">
+    <div class="row gy-5">
         <div class="col-sm">
             <div id="alert-holder">
             </div>
@@ -33,107 +100,95 @@
     </div>
 </div>
 <div class="container">
-    <div class="row">
-      <div class="col-sm">
-        
-            <h2>file upload</h2>
-            <form action="/create-file" method="POST" id="new-upload" enctype="multipart/form-data">
-                <br>
-                <input type="file" class="form control file" id="file" name="file">                
-                <br>
-                Title:
-                <br>
-                <input type="text" id="file-title" name="file-title">
-                <br>
-                <!-- Please select a file to upload: -->
-                Comments:
-                <br>
-                <input type="text" id="file-comment" name="file-comment">
-                <br>
-                <br>
-                
-                <input type="submit" id="new-file-submit" value="Upload File">
-            </form>
-            <br>
-            <br>
-            <div id="file-container" class="accordion accordion-flush"></div>
-        
-        </div>
-        <div class="col-sm">
-        
-            <h2>create a shared list</h2>
-            <form action="/create-list" method="POST" id="new-list">
-              <br>
-                <div class="form-group">
-                    <label for="list-title">List Title:</label>
-                    <input type="text" id="list-title" name="list-title">
-                </div>
-                <br>
-                <input type="submit" id="new-list-submit" value="Create List">
-            </form>
-            <br>
-            <br>
+    <div class="row gx-4">
+      
 
-            <div id="list-container" class="accordion accordion-flush"></div>
-        
-        </div>
-        <div class="col-sm">
-            <h2>family messages</h2>
-            <form action="/create-message" id="new-message" method="POST">
-                <div class="form-group row">
-                  <label for="staticMessages"></label>
-                  <div class="col-sm">
-                    <input type="text" readonly class="form-control-plaintext">
-                    <div id="message-holder"></div>
-                    <!-- value="email@example.com" -->
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label for="inputMessage"></label>
-                  <div class="col-sm-11">
-                    <input type="text" class="form-control" id="inputMessage" name="inputMessage">
-                  </div>
-                </div>
-                <div class="form-group-row">
-                    <br>
-                    <label for="messageSubmit" class="col-sm-3 col-form-label"></label>
-                    <input type="submit" id="new-message-submit" value="Send message">
+        <div class="col" id="create-lists-col" style="border-top-right-radius: 0px; margin-right: 0px;">
+          <div class="card border-success">
+            <div class="card-body">
+              <h2>Shared Lists</h2>
+              <br>
+              <form action="/create-list" method="POST" id="new-list">
+                <div class="input-group">
+                  <input type="text" placeholder="List name" aria-label="list name" class="form-control" name="list-title" id="list-title">
+                  <button class="btn btn-outline-secondary" type="submit" id="list-create-button"><i class="fa-solid fa-plus"></i></button>
                 </div>
               </form>
+              <br>
+              <div class="content-block message-holder">
+                <div id="list-container" class="accordion"></div>
+              </div>
+            </div>
+          </div>
         </div>
+        
+        <div class="col" id="create-files-col">
+          <div class="card border-warning">
+            <div class="card-body">
+              <h2>Shared Files</h2>
+              <br>
+              <form action="/create-file" method="POST" id="new-upload" enctype="multipart/form-data">
+                <div class="form-group-row">              
+                  <div class="input-group">
+                    <input type="text" placeholder="File name" aria-label="file name" class="form-control" name="file-title" id="file-title">
+                    <button class="btn btn-outline-secondary" type="button" id="file-uploader"><i class="fa-solid fa-cloud-arrow-up"></i></button>
+                  </div>
+                  
+                </div>
+                <input type="file" class="form-control-file" id="invisible-file-input" name="file" style="display: none;">
+                <input type="submit" id="new-file-submit" class="btn btn-primary" value="Upload File" style="display: none;">
+              </form>
+              <br>
+              <div class="message-holder">
+                <div id="file-container" class="list-group"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col" id="messages-col" style="margin-right: 10px; width: 32%; height: auto;" display="inline-block">
+          <div class="card border-info"  style="--bs-border-opacity: .5;">
+            <div class="card-body">
+              <h2>Family messaging</h2>
+                <div class="form-group row">
+                  <label for="staticMessages"></label>
+                  <div class="col-sm-12">
+                    <input type="text" readonly class="form-control-plaintext">
+                    <div id="message-holder" class="message-holder"></div>              
+                  </div>
+                </div>
+                <form action="/create-message" id="new-message" method="POST">
+                  <div class="input-group">
+                    <input type="text" aria-label="message content" class="form-control" name="inputMessage" id="inputMessage">
+                    <button class="btn btn-outline-secondary" type="submit" id="new-message-submit"><i class="fa-regular fa-paper-plane"></i></button>
+                  </div>
+                </form>         
+              </div>
+            </div>
+          </div>
     </div>
 </div>
 <br>
 <br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script src="/static/js/get-upload-info.js"></script>
-
-<!-- 
-<div class='accordion accordion-flush' id='list-container'>
-    <div class='accordion-item' id='listId'>
-        <h2 class ='accordion-header' id='flush-headingOne'>
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                listTitle
-            </button>
-        </h2>
-        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">
-                <li>listElement</li>
-                <li>listElement</li>
-                <li>listElement</li>
-                <li>listElement</li>
-                <li> 
-                    <form action="/add-to-list" method="POST" id="new-list-element"> 
-                        <input type="text" id="list-element" name="list-element">
-                        <input type="submit" id="new-list-element-submit" value="Add Item">
-                    </form>
-                </li>
-            </div>
-        </div>
-    </div> 
-</div>
--->
-
-
-
-
 {% endblock %}

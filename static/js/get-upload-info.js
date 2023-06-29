@@ -48,37 +48,38 @@ const fileContainer = document.getElementById('file-container');
 
 const fileDisplay = document.createElement('div');
 fileDisplay.setAttribute('id', 'flush-headingOne');
-fileDisplay.setAttribute('class', 'accordion-item');
+// fileDisplay.setAttribute('class', 'accordion-item');
 
 // fileDisplay.style.display = 'none';
 
 const fileTitleSpace = document.createElement('h2');
-fileTitleSpace.setAttribute('class', 'accordion-header');
-fileTitleSpace.setAttribute('id', 'flush-headingOne');
+// fileTitleSpace.setAttribute('class', 'accordion-header');
+// fileTitleSpace.setAttribute('id', 'flush-headingOne');
 
 const fileTitleButton = document.createElement('button');    
-fileTitleButton.setAttribute('class', 'accordion-button collapsed')
+// fileTitleButton.setAttribute('class', 'accordion-button collapsed')
 fileTitleButton.setAttribute('type', 'button');
 fileTitleButton.setAttribute('data-bs-toggle', 'collapse');
 fileTitleButton.setAttribute('data-bs-target', '#flush-collapseOne');
 fileTitleButton.setAttribute('aria-expanded', 'false');
 fileTitleButton.setAttribute('aria-controls', 'flush-collapseOne');
-fileTitleButton.innerHTML = 'Uploaded Files';
+// fileTitleButton.innerHTML = `Uploaded Files&nbsp;&nbsp;`;
 
 const fileHolder = document.createElement('div');
 fileHolder.setAttribute('id', 'flush-collapseOne');
-fileHolder.setAttribute('class', 'accordion-collapse collapse');
+// fileHolder.setAttribute('class', 'accordion-collapse collapse');
 fileHolder.setAttribute('aria-labelledby', 'flush-headingOne');
 fileHolder.setAttribute('data-bs-parent', `#listContainer`);
 
 const fileHolderBody = document.createElement('div');
-fileHolderBody.setAttribute('class', 'accordion-body');
+fileHolderBody.setAttribute('class', 'list-group list-group-flush');
+// fileHolderBody.setAttribute('class', 'accordion-body');
 
 fileHolder.appendChild(fileHolderBody);
 
-fileTitleSpace.appendChild(fileTitleButton);
+// fileTitleSpace.appendChild(fileTitleButton);
 
-fileDisplay.appendChild(fileTitleSpace);
+// fileDisplay.appendChild(fileTitleSpace);
 fileDisplay.appendChild(fileHolder);
 
 fileContainer.appendChild(fileDisplay);
@@ -216,7 +217,7 @@ messageSubmit.addEventListener(('click'), function(evt) {
     createMessageFormData = new FormData(document.getElementById('new-message'));
     const submitTime = Math.floor(Date.now()/1000)
     console.log(submitTime);
-    
+    console.log(document.getElementById('inputMessage').value)
     // console.log(submitTime);
     fetch((`/create-message/${submitTime}`), {
         method: 'POST',
@@ -329,6 +330,7 @@ fileSubmit.addEventListener(('click'), function(evt) {
         })
         .then((responseJson) => {
             console.log(responseJson);
+
             createAlertDisplay(responseJson['success'], responseJson['message'])
             // alertDisplay.innerHTML = responseJson['message'];
             const fileId = responseJson['file_id'];
@@ -344,16 +346,37 @@ fileSubmit.addEventListener(('click'), function(evt) {
             // console.log(isChild);
 
             addFileToDisplay(fileId, fileTitle, fileLocation, isChild);
+            document.getElementById('file-title').value = '';
             
         })
 })
+
+const invisibleFile = document.getElementById('invisible-file-input')
+invisibleFile.addEventListener(('change'), function(evt) {
+    console.log('invisibleFile El');
+    fileSubmit.click();
+})
+
+const fileUploader = document.getElementById('file-uploader');
+fileUploader.addEventListener(('click'), function(evt) {
+    console.log('fileUploader El');
+    invisibleFile.click();
+})
+
 
 
 function addFileToDisplay(fileId, fileTitle, fileLocation, isChild) {
     console.log(fileId, fileTitle, fileLocation, isChild);
     const fileLink = document.createElement('p');
+    fileLink.setAttribute('class', 'list-group-item');
     fileLink.setAttribute('id', fileId);
+    // fileLink.innerHTML = `<i class="fa-regular fa-file-lines" /> <a href="${fileLocation}" target="_blank">${fileTitle}</a> `
 
+    // if (isChild === false) {
+    //     fileLink.innerHTML += '<i class="fa-solid fa-xmark delete-icon" onClick="deleteClickAction" />'
+    // }
+    const fileLinkIcon = document.createElement('i');
+    fileLinkIcon.setAttribute('class', 'fa-regular fa-file-lines');
     const fileLinkInner = document.createElement('a');
     fileLinkInner.setAttribute('href', fileLocation);
     fileLinkInner.innerHTML = `${fileTitle} `
@@ -362,34 +385,10 @@ function addFileToDisplay(fileId, fileTitle, fileLocation, isChild) {
         fileDeleteIcon = document.createElement('i');
         fileDeleteIcon.setAttribute('class', 'fa-solid fa-xmark delete-icon');
 
-        fileDeleteIcon.addEventListener(('click'), function(evt) {
-            evt.preventDefault();
-            const targetFile = evt.target.closest('p')
-            const targetFileId = targetFile.id
-            console.log(targetFileId);
-            const confirmed = confirm('Are you sure you wish to delete this?')
-            console.log('316', confirmed);
-            if (confirmed) {
-                
-                fetch((`/delete-file/${targetFileId}`), {
-                    method: 'DELETE'
-                })
-                    .then((response) => {
-                        return response.json();
-                    })
-                    .then((responseJson) => {
-                        console.log(responseJson);
-                        createAlertDisplay(responseJson['success'], responseJson['message'])
-                        // alertDisplay.innerHTML = responseJson['message']
-                        if (responseJson['success']) {
-                            targetFile.remove();
-                        }
-                    })
-            }
-        })
+        fileDeleteIcon.addEventListener(('click'), handleDelete)
     }
 
-
+    fileLink.appendChild(fileLinkIcon);
     fileLink.appendChild(fileLinkInner);
     if (isChild === false) {
         fileLink.appendChild(fileDeleteIcon);
@@ -399,6 +398,32 @@ function addFileToDisplay(fileId, fileTitle, fileLocation, isChild) {
     // console.log(fileLink, fileLinkInner);
 }
 
+
+function handleDelete(evt) {
+    evt.preventDefault();
+    const targetFile = evt.target.closest('p')
+    const targetFileId = targetFile.id
+    console.log(targetFileId);
+    const confirmed = confirm('Are you sure you wish to delete this?')
+    console.log('316', confirmed);
+    if (confirmed) {
+        
+        fetch((`/delete-file/${targetFileId}`), {
+            method: 'DELETE'
+        })
+            .then((response) => {
+                return response.json();
+            })
+            .then((responseJson) => {
+                console.log(responseJson);
+                createAlertDisplay(responseJson['success'], responseJson['message'])
+                // alertDisplay.innerHTML = responseJson['message']
+                if (responseJson['success']) {
+                    targetFile.remove();
+                }
+            })
+    }
+}
 // this function creates the html elements for the list display
 // accordion, and takes in new input for it
 //
@@ -436,7 +461,7 @@ function displayList(listId, username, displayedTitle, elements, isChild) {
     listTitleButton.setAttribute('data-bs-target', `#flush-collapseOne-${listId}`);
     listTitleButton.setAttribute('aria-expanded', 'false');
     listTitleButton.setAttribute('aria-controls', `flush-collapseOne-${listId}`);
-    listTitleButton.innerText = `${displayedTitle} - added by ${username}`;
+    listTitleButton.innerHTML = `${displayedTitle} - <small>added by ${username}</small>`;
 
     // const listTitleDisplayed = document.createElement('p')
     // listTitleDisplayed.innerText = `${displayedTitle} - added by ${username}`;
@@ -445,7 +470,7 @@ function displayList(listId, username, displayedTitle, elements, isChild) {
     listElementHolder.setAttribute('id', `flush-collapseOne-${listId}`);
     listElementHolder.setAttribute('class', 'accordion-collapse collapse');
     listElementHolder.setAttribute('aria-labelledby', `flush-headingOne-${listId}`);
-    listElementHolder.setAttribute('data-bs-parent', `#listContainer`);
+    listElementHolder.setAttribute('data-bs-parent', `#listDisplay`);
 
     const listElementHolderBody = document.createElement('div');
     listElementHolderBody.setAttribute('class', 'accordion-body')

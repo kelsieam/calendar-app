@@ -95,15 +95,15 @@ def log_in():
         user = User.query.filter_by(username=username).first()
 
         if user and user.check_password(password):
-            flash('Successfully logged in')
+            # flash('Successfully logged in')
             session['username'] = username
-            return redirect('/inputinfo')
+            return redirect('/')
         else:
             flash('Invalid username or password')
-            return redirect('/login', username=None)
+            return redirect('/login')
         
     return render_template('login.html')
-        
+
 
 @app.route('/logout')
 def logout():
@@ -296,7 +296,8 @@ def modify_calendar_holiday(id):
     if holiday.user_id == current_user.user_id:
         db.session.add(holiday)
         db.session.commit()
-        return {'success': True, 'message': "Holiday successfully updated"}
+        return {'success': True, 'message': "Holiday successfully updated", 
+                'new_title': new_title, 'new_start': new_start, 'new_end': new_end}
     else:
         return {'success': False, 'message': "You cannot modify another user's holiday"}
 
@@ -495,7 +496,8 @@ def create_family_table():
         if user_to_connect_with:
             if user_to_connect_with.family_id:
                 if current_user.family_id:
-                    flash("user already has a family")
+                    # flash("user already has a family")
+                    return {'success': False, 'message': 'User is already in a family group'}
                 else:
                     current_user.family_id = user_to_connect_with.family_id
             

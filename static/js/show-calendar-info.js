@@ -81,7 +81,7 @@ holidayButton.addEventListener(('click'), function(evt) {
             console.log(defSchedResponseJson);
           })
       }
-      location.reload();
+      // location.reload();
     })
 
 
@@ -199,22 +199,22 @@ fetch('/api/sampledata')
         {
           editable: true,
           events: events,
-          color: '#330F0A'
+          color: '#074297'
         },
         {
           events: holidays,
           editable: true,
-          color: '#51513D'
+          color: '#119da4'
         },
         {
           events: defaultSchedules,
           rendering: 'background',
-          backgroundColor: '#D0B8AC',
+          backgroundColor: '#fdc30d',
         },
         {
           events: otherParentDefaultSchedules,
           rendering: 'background',
-          backgroundColor: '#EFE5DC'
+          backgroundColor: '#fee082'
         }
         ],
         
@@ -248,10 +248,11 @@ fetch('/api/sampledata')
           displayTime.innerHTML = formattedDate;
 
           const displayDescription = document.getElementById('show-event-description');
-          displayDescription.innerHTML = `
-                    Event description:
-                    <br>${info.description}
-          `;
+          // displayDescription.innerHTML = `
+          //           Event description:
+          //           <br>${info.description}
+          // `;
+          displayDescription.innerHTML = info.description;
           
           const eventChangeSection = document.getElementById('event-change-section');
           const eventDeleteSection = document.getElementById('event-delete-section');
@@ -282,6 +283,7 @@ fetch('/api/sampledata')
                 console.log(responseJson)
                 if (responseJson['success']) {
                   $('#eventModal').modal('hide');
+                  console.log(responseJson);
                   if (responseJson['new_title']) {
                     info.title = responseJson['new_title'];
                   } 

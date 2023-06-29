@@ -28,7 +28,10 @@ users = [
     crud.create_user('kelsie7', 'password', 'Bortimer', None, False),
     crud.create_user('kelsie8', 'password', 'Bortward', None, False),
     crud.create_user('kelsie9', 'password', 'Bortifer', None, True),
-    crud.create_user('kelsie10', 'password', 'Borticia', None, False)
+    crud.create_user('kelsie10', 'password', 'Borticia', None, False),
+    crud.create_user('kelsie-parent', 'password', 'Kelsie', None, False),
+    crud.create_user('kelsie-child', 'password', 'Winnie', None, True),
+    crud.create_user('kelsie-child-2', 'password', 'Leona', None, True)
     ]
 
 
