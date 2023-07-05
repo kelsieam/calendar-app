@@ -43,6 +43,23 @@
         "shared": true,
         "with_parent": 1,
         "user_id": 1
+    },
+    {
+        "start": "2023-07-08 10:00:00",
+        "end": "2023-07-08 13:00:00",
+        "label": "Bingo's soccer game",
+        "description": "team pictures after",
+        "shared": true,
+        "with_parent": 1,
+        "user_id": 11
+    },
+    {
+        "start": "2023-07-25 14:00:00",
+        "end": "2023-07-25 14:30:00",
+        "label": "Bluey physical",
+        "description": "need to confirm before 7/24",
+        "shared": true,
+        "with_parent": 1,
+        "user_id": 11
     }
-    
 ]

@@ -16,26 +16,40 @@
     }
 
     body {
-      background-color: #fffbf0;
+      background-color: #f7faff;
     }
 
     .nav-tabs .nav-item .nav-link.active {
-      background-color: linear-gradient(#cde1fe, white);
-      color: #0d6efd;
+      /* background-color: linear-gradient(#cde1fe, white); */
+      background: rgb(205,225,254);
+      /* background: linear-gradient(180deg, rgba(205,225,254,1) 0%, rgba(255,255,255,1) 100%); */
+      background: linear-gradient(180deg, rgba(208,227,255,1) 0%, rgba(238,245,255,1) 100%);
+      color: #074297;
     }
 
     .nav-link {
       color: black;
     }
 
-
+    /* .card {
+      border: 2px solid rgba(0,0,0,.125);
+    } */
+    
+    .add-to-calendar-tabs {
+      background: rgb(238,245,255);
+      background: linear-gradient(180deg, rgba(238,245,255,1) 0%, rgba(255,255,255,1) 100%);
+      /* background-color: #eef5ff;  */
+      padding: 5px; 
+      border-radius: 5px;
+    }
     
   </style>
 {% endblock %}
 {% block body %}
 <!-- style="background-color: #cee2fe" -->
 <!-- style="background-color: #5599fd;" -->
-<nav class="navbar navbar-expand-lg navbar-light">
+<!-- #D1E4FF -->
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
   <div class="container">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -45,6 +59,7 @@
         <li class="nav-item">
           <a class="nav-link" href="/uploads">Shared Info</a>
         </li>
+        
         <li class="nav-item">
           <a class="nav-link" href="/logout">Log Out</a>
         </li>
@@ -55,40 +70,46 @@
 
 <div class="container">
   <div class="row">
-      <div class="col-sm">
-          <div id="alert-holder">
-          </div>
+    <div class="col-sm">
+      <div id="alert-holder">
       </div>
+    </div>
   </div>
 </div>
 
 <div class="container">
     <div class="row">
       <div class="col-sm-2" id="family-connect-div">
+        
         <div class="card">
           <div class="card-body">
             {% if 'username' in session and username is not none %}
             <div id="username" display="inline-block"></div>
-            <h5>Hi, {{ username }}!</h5>
-            <br>
+              {% if family_members|length == 0 %}
+              <h5>Hi, {{ username }}</h5>
+              {% endif %}
+          
               {% if family_members|length > 0 %}
-              <h5>Family Members</h5>
+              <h5>family members:</h5>
               {% endif %}
                 <ul class="list-group">
                     {% for member in family_members %}
                         {% if member.username != username %}
-                            <li class="list-group-item"><b><small>{{ member.username }}</small></b>: {{ member.name }}</li>
+                            <li class="list-group-item"><b><small>{{ member.username }}</small></b> - {{ member.name }}</li>
                         {% endif %}
                     {% endfor %}
-                    
                 </ul>
                 <br>
                 <div id="create-family-section" display="inline-block">
                   <h6>Add to your family:</h6>
                   <form action="/create-family" method="POST" id="connect-users">
-                      <input type="text" id="username-to-connect" name="username-to-connect" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="connect-btn" required>
-                      <br>
-                      <button class="btn btn-primary" type="submit" id="connect-btn">Add to Family</button>
+                    <div class="form-group-row">
+                      <div class="input-group">
+                        <input type="text" id="username-to-connect" name="username-to-connect" class="form-control" placeholder="Username" aria-describedby="connect-btn" aria-label="Username">
+                        <button class="btn btn-outline-secondary" type="button" id="connect-btn">+</button>
+                      </div>
+                    </div>
+                    
                   </form>
                 </div>
             {% else %}
@@ -96,73 +117,75 @@
             {% endif %}
           </div>
         </div>
+      
       </div>
+      
       <div class="col-sm-7" id="calendar-div">
         <div class="card">
           <div class="card-body">
-        <div id='calendar'></div>
-
-        <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="eventModalLabel"></h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div id="show-event-data">
-                  <!-- <div id="show-event-title"></div>
-                  <br> -->
-                  <div id="show-event-time"></div>
-                  <br>
-                  <div id="show-event-description"></div>
-                </div>
-                <hr>
-                <div id="event-change-section">
-                  <h5>Modify Event</h5>
-                  <br>
-                  <form id="changeEventForm" method="PATCH" action="/modify-event/<id>">
-                    <div class="mb-3">
-                      <label for="eventTitle" class="form-label">New title:</label>
-                      <input type="text" class="form-control" name="eventTitle" id="eventTitle" placeholder="New Title">
-                    </div>
-                    <div class="mb-3">
-                      <label for="eventStart" class="form-label">New start time:</label>
-                      <input type="datetime-local" class="form-control" name="eventStart" id="eventStart">
-                    </div>
-                    <div class="mb-3">
-                      <label for="eventEnd" class="form-label">New end time:</label>
-                      <input type="datetime-local" class="form-control" name="eventEnd" id="eventEnd">
-                    </div>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" form="changeEventForm" class="btn btn-primary">Save Changes</button>
-                  </form>
-                </div>
-                <div id="event-delete-section">
-                  <form>
-                      <hr>
-                      <h5>Delete Event</h5>
+            <div id='calendar'></div>
+            <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel"></h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div id="show-event-data">
+                      <!-- <div id="show-event-title"></div>
+                      <br> -->
+                      <div id="show-event-time"></div>
                       <br>
-                      You can only delete events you have created. Delete event?
-                      <button type ="button" id="delete-button" class="btn btn-primary" data-url="/delete-event/">
-                      Yes, delete this event</button>
-                  </form>
+                      <div id="show-event-description"></div>
+                    </div>
+                    <hr>
+                    <div id="event-change-section">
+                      <h5>Modify Event</h5>
+                      <br>
+                      <form id="changeEventForm" method="PATCH" action="/modify-event/<id>">
+                        <div class="mb-3">
+                          <label for="eventTitle" class="form-label">New title:</label>
+                          <input type="text" class="form-control" name="eventTitle" id="eventTitle" placeholder="New Title">
+                        </div>
+                        <div class="mb-3">
+                          <label for="eventStart" class="form-label">New start time:</label>
+                          <input type="datetime-local" class="form-control" name="eventStart" id="eventStart">
+                        </div>
+                        <div class="mb-3">
+                          <label for="eventEnd" class="form-label">New end time:</label>
+                          <input type="datetime-local" class="form-control" name="eventEnd" id="eventEnd">
+                        </div>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" form="changeEventForm" class="btn btn-outline-secondary">Save Changes</button>
+                      </form>
+                    </div>
+                    <div id="event-delete-section">
+                      <form>
+                          <hr>
+                          <h5>Delete Event</h5>
+                          <br>
+                          You can only delete events you have created. Delete event?
+                          <button type ="button" id="delete-button" class="btn btn-outline-secondary" data-url="/delete-event/">
+                          Yes, delete this event</button>
+                      </form>
+                    </div>
+                    <div id="error-message" style="display: none;">
+                      <!-- Placeholder for displaying error message -->
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                  </div>
                 </div>
-                <div id="error-message" style="display: none;">
-                  <!-- Placeholder for displaying error message -->
-                </div>
-              </div>
-              <div class="modal-footer">
               </div>
             </div>
-          </div>
-        </div>
         </div>
       </div>
       </div>
       <div class="col-sm-3" id="parenting-schedule-column">
+        <div class="row">
         <div class="card">
           <div class="card-body">
         <ul class="nav nav-tabs" id="schedule-add-to-calendar" role="tablist">
@@ -176,40 +199,43 @@
         <div class="tab-content" id="schedule-add-to-calendarContent">
           <div class="tab-pane fade show active" id="parenting-schedule" role="tabpanel" 
               aria-labelledby="parenting-schedule-tab">
-              <form action="/create-parenting-schedule" method="POST" id="parenting-schedule-form">
-                <br>
-                <div class="mb-3">
-                  <label for="parenting-schedule-start" class="form-label">When does this parenting schedule start?</label>
-                  <input type="date" id="parenting-schedule-start" name="parenting-schedule-start" class="form-control" required>
-                </div>
-                
-                <div class="mb-3">
-                  <label class="form-label">Which parent will start their parenting time on that day?</label>
-                  <div class="form-check">
-                    <input type="radio" id="parent-a" name="parenting-schedule-parent-start" value="true" class="form-check-input" required>
-                    <label for="parent-a" class="form-check-label">{{ username }}</label>
+              <div class="add-to-calendar-tabs">
+                <form action="/create-parenting-schedule" method="POST" id="parenting-schedule-form">
+                  <br>
+                  <div class="mb-3">
+                    <label for="parenting-schedule-start" class="form-label">When does this parenting schedule start?</label>
+                    <input type="date" id="parenting-schedule-start" name="parenting-schedule-start" class="form-control" required>
                   </div>
-                  <div class="form-check">
-                    <input type="radio" id="parent-b" name="parenting-schedule-parent-start" value="false" class="form-check-input" required>
-                    <label for="parent-b" class="form-check-label">Other parent</label>
+                  
+                  <div class="mb-3">
+                    <label class="form-label">Which parent will start their parenting time on that day?</label>
+                    <div class="form-check">
+                      <input type="radio" id="parent-a" name="parenting-schedule-parent-start" value="true" class="form-check-input" required>
+                      <label for="parent-a" class="form-check-label">{{ username }}</label>
+                    </div>
+                    <div class="form-check">
+                      <input type="radio" id="parent-b" name="parenting-schedule-parent-start" value="false" class="form-check-input" required>
+                      <label for="parent-b" class="form-check-label">Other parent</label>
+                    </div>
                   </div>
-                </div>
-                
-                <div class="mb-3">
-                  <label for="parenting-schedule-cycle-duration" class="form-label">For how many days in a row are you the custodial parent?</label>
-                  <input type="number" id="parenting-schedule-cycle-duration" name="parenting-schedule-cycle-duration" class="form-control" required>
-                </div>
-                
-                <button type="submit" id="parenting-schedule-submit" class="btn btn-primary">Submit</button>
-              </form>
-              
+                  
+                  <div class="mb-3">
+                    <label for="parenting-schedule-cycle-duration" class="form-label">For how many days in a row are you the custodial parent?</label>
+                    <input type="number" id="parenting-schedule-cycle-duration" name="parenting-schedule-cycle-duration" class="form-control" required>
+                  </div>
+                  
+                  <button type="submit" id="parenting-schedule-submit" class="btn btn-outline-secondary">Submit</button>
+                </form>
+              </div>
               
               </div>
             </div>
           </div>
         </div>
       </div>
+      </div>
       <div class="col-sm-3" id="event-holiday-column">
+        
         <div class="card">
           <div class="card-body">
         <ul class="nav nav-tabs" id="add-to-calendar" role="tablist">
@@ -228,8 +254,9 @@
           </li>
         </ul>
         <div class="tab-content" id="add-to-calendarContent">
-          <div class="tab-pane fade show active" id="add-event" role="tabpanel" 
+          <div class="tab-pane fade show active" id="add-event" role="tabpanel"
               aria-labelledby="add-event-tab">
+              <div class="add-to-calendar-tabs" id="create-event-div" style="background-color: #eef5ff; padding: 5px; border-radius: 5px;">
               <form action="/create-event" method="POST" id="event-form">
                 <div class="mb-3">
                   <br>
@@ -264,12 +291,14 @@
                   </div>
                 </div>
               
-                <button type="submit" id="event-submit" class="btn btn-primary">Submit</button>
+                <button type="submit" id="event-submit" class="btn btn-outline-secondary">Submit</button>
               </form>
+            </div>
           </div>
           <div class="tab-pane fade" id="add-holiday" role="tabpanel" 
               aria-labelledby="add-holiday-tab">
                   <!-- <h5>Holidays</h5> -->
+                  <div class="add-to-calendar-tabs">
                   <form action='/create-holiday' method='POST' id="holiday-form">
                       <div class="mb-3">
                         <br>
@@ -333,8 +362,10 @@
                           <!-- <label for="holiday-start" class="form-label">When does this holiday start?</label>                        
                         <input type="datetime-local" id="holiday-start"name="holiday-start" class="form-control" required> -->
                       </section>
+                      
                       <br>
-                      <input type="submit" class="btn btn-primary" id="holiday-submit">
+                      <input type="submit" class="btn btn-outline-secondary" id="holiday-submit">
+                    </div>
           </div>
         </div>
 
@@ -342,6 +373,7 @@
 
       </div>
       </div>
+      
       </div>
     </div>
 </div>

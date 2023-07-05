@@ -57,6 +57,7 @@ eventButton.addEventListener(('click'), function(evt) {
 
 const holidayButton = document.getElementById('holiday-submit');
 holidayButton.addEventListener(('click'), function(evt) {
+  console.log('in holidayButton El')
   evt.preventDefault();
   const createHolidayFormData = new FormData(document.getElementById('holiday-form'));
   const changeDefSchedFormData = new FormData(document.getElementById('new-default-schedule-form'))
@@ -70,6 +71,7 @@ holidayButton.addEventListener(('click'), function(evt) {
     .then((holidayResponseJson) => {
       console.log(holidayResponseJson);
       if (holidayResponseJson['change_default_schedule'] === true) {
+        console.log('in new def sched fetch');
         fetch(('/create-new-default-schedule'), {
           body: changeDefSchedFormData,
           method: 'POST'
@@ -199,7 +201,7 @@ fetch('/api/sampledata')
         {
           editable: true,
           events: events,
-          color: '#074297'
+          color: '#013c93'
         },
         {
           events: holidays,
@@ -209,13 +211,13 @@ fetch('/api/sampledata')
         {
           events: defaultSchedules,
           rendering: 'background',
-          backgroundColor: '#fdc30d',
+          backgroundColor: '#ffc207',
         },
-        {
-          events: otherParentDefaultSchedules,
-          rendering: 'background',
-          backgroundColor: '#fee082'
-        }
+        // {
+        //   events: otherParentDefaultSchedules,
+        //   rendering: 'background',
+        //   backgroundColor: '#fee082'
+        // }
         ],
         
         // eventMouseover: function (info) {
@@ -306,17 +308,11 @@ fetch('/api/sampledata')
           if (user.is_child === true) {
             deleteButton.hidden = true;
           }
-          deleteButton.addEventListener('click', function() {
-            // const user = data.current_user;
-            // if (user.is_child === true) {
-            //     fetch('/child-profile')
-            //       .then((response) => {
-            //         return response.json()
-            //       })
-            //       .then((responseJson) => {
-            //         alert(responseJson['message'])
-            //       })
-            // }
+
+          const deleteListener = () => {
+
+          
+    
             let confirmed = confirm('Are you sure you want to delete this event?')
             if (confirmed) {
               let urlForDelete;
@@ -334,6 +330,7 @@ fetch('/api/sampledata')
               })
               .then(function(responseJson) {
                 console.log(responseJson);
+                deleteButton.removeEventListener('click', deleteListener);
                 if (responseJson['success']) {
                   $('#eventModal').modal('hide');
                   // 'removeEvents'[info._id, idOrFilter];
@@ -343,7 +340,8 @@ fetch('/api/sampledata')
                   }
                 })
             }
-          })
+          }
+          deleteButton.addEventListener('click', deleteListener);
           return false;
         }
     })
@@ -397,7 +395,7 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
         const endDate = new Date(startDateCopy);
         endDate.setDate(startDateCopy.getDate() + 730);
         let loop = new Date(startDate);
-        while (loop <= endDate) {
+        while (loop < endDate) {
           let dayCounter = 0;
             while (dayCounter < (schedule.cycle_duration * 2)) {
               let dailyStartDate = new Date(loop);
@@ -405,7 +403,7 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
               if (dailyStartDateCopy in holidayDict) {
                 const holidays = holidayDict[dailyStartDateCopy];
                 for (let holiday of holidays) {
-                  if (holiday.parent_with === 4) {
+                  if (holiday.with_parent === 4) {
                     // show on other parent's calendar
                     
                       const loopCopy = new Date(loop);
@@ -456,7 +454,7 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
     } else {
         const endDate = new Date(schedule.end);
         let loop = new Date(startDate);
-        while (loop <= endDate) {
+        while (loop < endDate) {
            let dayCounter = 0;
             while (dayCounter < (schedule.cycle_duration * 2)) {
               let dailyStartDate = new Date(loop);
@@ -475,7 +473,7 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                       start: loopCopy,
                       end: newDate,
                       allDay: true
-                    } 
+                    };
                     otherParentDefaultSchedules.push(newOtherParentDefaultSchedule);
                   } else if (holiday.with_parent === 3) {
                     const loopCopy = new Date(loop);
@@ -506,6 +504,7 @@ function createDefaultScheduleEvents(allDefaultSchedules, holidayDict) {
                   allDay: true
                 };
                 defaultSchedules.push(newDefaultSchedule);
+
               } else if (dayCounter < (schedule.cycle_duration * 2) && 
                 dayCounter >= schedule.cycle_duration && 
                 (loop < (endDate - schedule.cycle_duration))) {

@@ -2,23 +2,30 @@
 
     {
         "parent_start": true,
-        "start": "2023-05-12 15:00:00",
-        "end": "2023-12-29 15:00:00",
+        "start": "2023-05-12 00:00:00",
+        "end": "2023-12-29 00:00:00",
         "cycle_duration": 7,
         "user_id": 1
     },
     {
         "parent_start": true,
-        "start": "2023-12-29 15:00:00",
-        "end": "2024-04-05 15:00:00",
+        "start": "2023-12-29 00:00:00",
+        "end": "2024-04-05 00:00:00",
         "cycle_duration": 7,
         "user_id": 1
     },
     {
         "parent_start": true,
-        "start": "2024-04-05 15:00:00",
+        "start": "2024-04-05 00:00:00",
         "end": null,
         "cycle_duration": 7,
         "user_id": 1
+    },
+    {
+        "parent_start": true,
+        "start": "2023-04-08 00:00:00",
+        "end": null,
+        "cycle_duration": 7,
+        "user_id": 11
     }
 ]

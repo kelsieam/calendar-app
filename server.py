@@ -38,17 +38,20 @@ def current_user():
 @app.context_processor
 def user_family_names():
     user_info = {}
-    
-    if 'username' in session:
-        current_username = session['username']
-        current_user = User.query.filter_by(username=current_username).first()
+    print('session', session)
+    # print ("session['username']", session['username'])
+    if session:
+        if session['username'] and 'username' in session:
+            current_username = session['username']
+            current_user = User.query.filter_by(username=current_username).first()
+            
+            user_info['username'] = current_user.username
+            if current_user.family_id is not None:
+                user_info['family_members'] = User.query.filter_by(
+                    family_id=current_user.family_id).all()
+            else:
+                user_info['family_members'] = []
         
-        user_info['username'] = current_user.username
-        if current_user.family_id is not None:
-            user_info['family_members'] = User.query.filter_by(
-                family_id=current_user.family_id).all()
-        else:
-            user_info['family_members'] = []
     return user_info
 
 @app.route('/user-family-info', methods=['GET', 'POST'])
@@ -57,12 +60,12 @@ def user_family_info():
     
     if 'username' in session:
         current_username = session['username']
-        current_user = User.query.filter_by(username=current_username).first()
+        current_user = User.query.filter_by(username=current_username).first().as_dict()
         
         # user_info['user'] = current_user
         if current_user.family_id is not None:
             family_members = User.query.filter_by(
-                family_id=current_user.family_id).all()
+                family_id=current_user.family_id).all().as_dict()
         else:
             family_members = []
     
@@ -107,7 +110,9 @@ def log_in():
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
+    if 'username' in session:
+        session.pop('username', None)
+    session['username'] = None
     return redirect('/')
 
 
@@ -245,7 +250,7 @@ def delete_calendar_holiday(id):
     holiday = get_calendar_holiday_by_id(id)
     username = session['username']
     current_user = User.query.filter_by(username=username).first()
-    # print(holiday.user_id, current_user.user_id)
+    print(holiday.user_id, current_user.user_id)
     if holiday.user_id == current_user.user_id:
         db.session.delete(holiday)
         db.session.commit()
@@ -400,7 +405,9 @@ def create_calendar_holiday():
 def create_parenting_schedule():
     if request.method == 'POST':    
         start = request.form.get('parenting-schedule-start')
+        print(start)
         parent_start = request.form.get('parenting-schedule-parent-start')
+        print(parent_start)
         if parent_start == 'true':
             parent_start = True
         else:
@@ -429,18 +436,19 @@ def create_parenting_schedule():
 @app.route('/create-new-default-schedule', methods = ['POST'])
 def create_change_default_schedule():
     # if request.method == 'POST':
+    print('in create new def sched route')
     if 'username' in session:
         current_username = session['username']
         current_user = User.query.filter_by(username=current_username).first()
         user_id = current_user.user_id
         
-        changed_schedule_start = request.form.get('default-schedule-start')
-        changed_schedule_start = datetime.strptime(changed_schedule_start, '%Y-%m-%d')
-        changed_schedule_parent_start = request.form.get('default-schedule-parent')
-        if changed_schedule_parent_start == 'true':
-            changed_schedule_parent_start = True
+        start = request.form.get('default-schedule-start')
+        start = datetime.strptime(start, '%Y-%m-%d')
+        parent_start = request.form.get('default-schedule-parent')
+        if parent_start == 'true':
+            parent_start = True
         else:
-            changed_schedule_parent_start = False
+            parent_start = False
         
         all_schedules = DefaultSchedule.query\
             .filter_by(user_id=user_id)\
@@ -449,17 +457,17 @@ def create_change_default_schedule():
         
         def get_schedule_end(all_schedules):
             for schedule in all_schedules:
-                if schedule.start >= changed_schedule_start:
+                if schedule.start >= start:
                     continue
                 else:
                     return schedule
                 
         schedule_to_end = get_schedule_end(all_schedules)
-        schedule_to_end.end = changed_schedule_start
+        schedule_to_end.end = start
 
         def get_schedule_for_end(all_schedules):
             for schedule in reversed(all_schedules):
-                if schedule.start <= changed_schedule_start:
+                if schedule.start <= start:
                     continue
                 else:
                     return schedule
@@ -470,12 +478,20 @@ def create_change_default_schedule():
         else:
             changed_schedule_end = schedule_end_is_from.start
         
-        changed_schedule_cycle_duration = schedule_to_end.cycle_duration
+        cycle_duration = schedule_to_end.cycle_duration
 
-        new_default_schedule = create_def_sched(parent_start=changed_schedule_parent_start, 
-                                            start=changed_schedule_start, 
+        existing_default_schedule = DefaultSchedule.query\
+            .filter_by(parent_start=parent_start, start=start, 
+                    end=changed_schedule_end, cycle_duration=cycle_duration, 
+                        user_id=user_id).first()
+        
+        if existing_default_schedule:
+            return {'success': False, 'message': 'That event already exists'}
+
+        new_default_schedule = create_def_sched(parent_start=parent_start, 
+                                            start=start, 
                                             end=changed_schedule_end, 
-                                            cycle_duration=changed_schedule_cycle_duration, 
+                                            cycle_duration=cycle_duration, 
                                             user_id=user_id)
         
         db.session.add(new_default_schedule)
@@ -531,7 +547,10 @@ def create_family_table():
 @app.route('/uploads')
 def uploads_page():
 
-    return render_template('uploads.html')
+    if 'username' in session and session['username']:
+        return render_template('uploads.html')
+    
+    return redirect('/login')
 
 
 @app.route('/api/uploads')

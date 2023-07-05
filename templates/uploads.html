@@ -3,15 +3,13 @@
 <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script> -->
 <script src="https://kit.fontawesome.com/6429eb5f97.js" crossorigin="anonymous"></script>
+
 {% endblock %}
 {% block body %}
 
 
 
 <style>
-  .col-sm-4 {
-    background-color: yellow;
-  }
 
   .form-col {
     margin-right: 10px; 
@@ -38,16 +36,16 @@
       overflow-wrap: break-word;
       max-width: 100%;
       overflow-y: auto;
-      max-height: 450px;
-      min-height: 450px;
+      max-height: 420px;
+      min-height: 420px;
       padding: 5px;
       background-color: white;
       border-radius: 10px;
-      margin: -7px;
+      margin: 3px;
     }
 
   body {
-    background-color: #fffbf0;
+    background-color: #f7faff;
   }
   
   .card {
@@ -73,7 +71,7 @@
   /* style="border: 3px; border-color: #119da4" */
 </style>
 
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #fffbf0">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -101,70 +99,70 @@
 </div>
 <div class="container">
     <div class="row gx-4">
-      
-
-        <div class="col" id="create-lists-col" style="border-top-right-radius: 0px; margin-right: 0px;">
-          <div class="card border-success">
-            <div class="card-body">
-              <h2>Shared Lists</h2>
-              <br>
-              <form action="/create-list" method="POST" id="new-list">
-                <div class="input-group">
-                  <input type="text" placeholder="List name" aria-label="list name" class="form-control" name="list-title" id="list-title">
-                  <button class="btn btn-outline-secondary" type="submit" id="list-create-button"><i class="fa-solid fa-plus"></i></button>
-                </div>
-              </form>
-              <br>
-              <div class="content-block message-holder">
-                <div id="list-container" class="accordion"></div>
+      <div class="col" id="lists-col">
+        <div class="card border-success" style="border: 1px solid;">
+          <div class="card-body">
+            <h2>Shared Lists</h2>
+            <br>
+            <form action="/create-list" method="POST" id="new-list">
+              <div class="input-group">
+                <input type="text" placeholder="List name" aria-label="list name" class="form-control" name="list-title" id="list-title">
+                <button class="btn btn-outline-success" type="submit" id="list-create-button"><i class="fa-solid fa-plus"></i></button>
               </div>
+            </form>
+            <br>
+            <div class="message-holder" style="padding-bottom: -8px;">
+              <div id="list-container" class="accordion"></div>
             </div>
           </div>
         </div>
-        
-        <div class="col" id="create-files-col">
-          <div class="card border-warning">
-            <div class="card-body">
-              <h2>Shared Files</h2>
-              <br>
+      </div>
+      
+      <div class="col" id="files-col">
+        <div class="card border-warning" style="border: 1px solid;">
+          <div class="card-body">
+            <h2>Shared Files</h2>
+            <br>
+            <div class="col-sm-12">
               <form action="/create-file" method="POST" id="new-upload" enctype="multipart/form-data">
-                <div class="form-group-row">              
+                <div class="form-group-row">    
                   <div class="input-group">
                     <input type="text" placeholder="File name" aria-label="file name" class="form-control" name="file-title" id="file-title">
-                    <button class="btn btn-outline-secondary" type="button" id="file-uploader"><i class="fa-solid fa-cloud-arrow-up"></i></button>
+                    <button class="btn btn-outline-warning" type="button" id="file-uploader"><i class="fa-solid fa-cloud-arrow-up"></i></button>
                   </div>
-                  
                 </div>
                 <input type="file" class="form-control-file" id="invisible-file-input" name="file" style="display: none;">
                 <input type="submit" id="new-file-submit" class="btn btn-primary" value="Upload File" style="display: none;">
               </form>
-              <br>
-              <div class="message-holder">
-                <div id="file-container" class="list-group"></div>
-              </div>
+            </div>
+            <br>
+            <div class="message-holder" style="padding-bottom: -8px;">
+              <div id="file-container" class="list-group"></div>
             </div>
           </div>
         </div>
-        <div class="col" id="messages-col" style="margin-right: 10px; width: 32%; height: auto;" display="inline-block">
-          <div class="card border-info"  style="--bs-border-opacity: .5;">
-            <div class="card-body">
-              <h2>Family messaging</h2>
-                <div class="form-group row">
-                  <label for="staticMessages"></label>
-                  <div class="col-sm-12">
-                    <input type="text" readonly class="form-control-plaintext">
-                    <div id="message-holder" class="message-holder"></div>              
-                  </div>
+      </div>
+      <!-- style="margin-right: 10px; width: 32%; height: auto;" display="inline-block" -->
+      <div class="col" id="messages-col">
+        <div class="card border-info" style="border: 1px solid;">
+          <div class="card-body">
+            <h2>Family messaging</h2>
+              <div class="form-group row">
+                <label for="staticMessages"></label>
+                <div class="col-sm-12">
+                  <input type="text" readonly class="form-control-plaintext">
+                  <div id="message-holder" class="message-holder"></div>              
                 </div>
-                <form action="/create-message" id="new-message" method="POST">
-                  <div class="input-group">
-                    <input type="text" aria-label="message content" class="form-control" name="inputMessage" id="inputMessage">
-                    <button class="btn btn-outline-secondary" type="submit" id="new-message-submit"><i class="fa-regular fa-paper-plane"></i></button>
-                  </div>
-                </form>         
               </div>
+              <form action="/create-message" id="new-message" method="POST">
+                <div class="input-group" style="padding-top: 10px;">
+                  <input type="text" aria-label="message content" class="form-control" name="inputMessage" id="inputMessage">
+                  <button class="btn btn-outline-info" type="submit" id="new-message-submit"><i class="fa-regular fa-paper-plane"></i></button>
+                </div>
+              </form>         
             </div>
           </div>
+        </div>
     </div>
 </div>
 <br>

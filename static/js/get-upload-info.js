@@ -424,6 +424,9 @@ function handleDelete(evt) {
             })
     }
 }
+
+//
+//
 // this function creates the html elements for the list display
 // accordion, and takes in new input for it
 //
@@ -437,8 +440,12 @@ function handleDelete(evt) {
 //                            |	             |     	         |
 //                (prepend)-->|	             |     	         |
 //                      listElement	  listItemForm     listDeleteButton
-//                       |     	      |  	     |
-//               deleteIcon    inputListItem   submitListItemButton
+//                       |     	            |
+//               deleteIcon        listItemFormInputGroup
+//                                      |               |
+//                              inputListItem   submitListItemButton
+//                                                          |
+//                                                  submitListButtonIcon
 //
 //
 
@@ -475,22 +482,36 @@ function displayList(listId, username, displayedTitle, elements, isChild) {
     const listElementHolderBody = document.createElement('div');
     listElementHolderBody.setAttribute('class', 'accordion-body')
     
+
     const listItemForm = document.createElement('form');
-    listItemForm.setAttribute('action', '/add-to-list')
-    listItemForm.setAttribute('method', 'POST')
-    listItemForm.setAttribute('id', `new-list-element${listId}`)
-    
+    listItemForm.setAttribute('action', '/add-to-list');
+    listItemForm.setAttribute('method', 'POST');
+    listItemForm.setAttribute('id', `new-list-element${listId}`);
+    listItemForm.setAttribute('style', 'display: inline;');
+    // listItemForm.setAttribute('class', 'mb-3');
+
+    const listItemFormInputGroup = document.createElement('div');
+    listItemFormInputGroup.setAttribute('class', 'input-group mb-3');
+
     const inputListItem = document.createElement('input');
     inputListItem.setAttribute('type', 'text');
     inputListItem.setAttribute('id', 'list-element');
     inputListItem.setAttribute('name', 'list-element');
     inputListItem.setAttribute('placeholder', 'new item...');
+    inputListItem.setAttribute('class', 'form-control');
+    inputListItem.setAttribute('aria-label', 'list element');
     // inputListItem.setAttribute('display', 'inline');
 
-    const submitListItemButton = document.createElement('input');
+    const submitListItemButton = document.createElement('button');
+    submitListItemButton.setAttribute('class', 'btn btn-outline-success')
     submitListItemButton.setAttribute('type', 'submit');
     submitListItemButton.setAttribute('id', 'list-element-submit');
-    submitListItemButton.setAttribute('value', 'Add to List');
+    // submitListItemButton.setAttribute('value', 'Add to List');
+    // submitListItemButton.innerHTML = '<i class="fa-solid fa-plus"></i>';
+
+    const submitListButtonIcon = document.createElement('i');
+    submitListButtonIcon.setAttribute('class', 'fa-solid fa-plus');
+
 
     submitListItemButton.addEventListener('click', function (evt) {
         evt.preventDefault();
@@ -547,13 +568,15 @@ function displayList(listId, username, displayedTitle, elements, isChild) {
                 listElementHolderBody.prepend(newListElement);
             })
     })
+
     // console.log(isChild);
     const listDeleteButton = document.createElement('button');
     if (isChild === false) {
         
         listDeleteButton.setAttribute('id', `delete-button-${listId}`);
-        listDeleteButton.setAttribute('class', 'btn btn-outline-danger');
-        listDeleteButton.innerHTML = 'Delete list';
+        listDeleteButton.setAttribute('class', 'btn btn-outline-secondary mb-3');
+        listDeleteButton.setAttribute('style', 'display: inline;');
+        listDeleteButton.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
 
         listDeleteButton.addEventListener('click', function (evt) {
             evt.preventDefault()
@@ -582,9 +605,12 @@ function displayList(listId, username, displayedTitle, elements, isChild) {
     // const formAsListItem = document.createElement('li');
     // formAsListItem.setAttribute('display', 'inline')
 
-    listItemForm.appendChild(inputListItem);
-    listItemForm.appendChild(submitListItemButton);
+    submitListItemButton.appendChild(submitListButtonIcon);
+    
+    listItemFormInputGroup.appendChild(inputListItem);
+    listItemFormInputGroup.appendChild(submitListItemButton);
 
+    listItemForm.appendChild(listItemFormInputGroup);
     // formAsListItem.appendChild(listItemForm);
 
     listElementHolderBody.appendChild(listItemForm);
@@ -600,7 +626,7 @@ function displayList(listId, username, displayedTitle, elements, isChild) {
             listElement.innerHTML = `
                 <span>${item.content}</span>
                 <i class="fa-solid fa-xmark delete-icon"></i>
-            `
+            `;
             const deleteIcon = listElement.querySelector(`.delete-icon`);
             deleteIcon.addEventListener(('click'), function(evt) {
                 evt.preventDefault();

@@ -11,9 +11,9 @@
 
 body {
   font-family: 'Roboto', sans-serif;
+  background-color: #f7faff;
+
 }
-
-
 
 #alert-holder {
   height: 50px;
