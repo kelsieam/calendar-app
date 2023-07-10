@@ -1,6 +1,6 @@
 """CRUD operations."""
 
-from model import db, Event, DefaultSchedule, Holiday, User, Family, List, ListElement, File, Message,connect_to_db
+from model import db, Event, DefaultSchedule, Holiday, User, Family, List, ListElement, File, Message, connect_to_db
 
 
 def create_event(start, end, label, description, shared, with_parent, user_id):

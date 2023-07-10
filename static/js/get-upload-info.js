@@ -442,8 +442,8 @@ function handleDelete(evt) {
 //                      listElement	  listItemForm     listDeleteButton
 //                       |     	            |
 //               deleteIcon        listItemFormInputGroup
-//                                      |               |
-//                              inputListItem   submitListItemButton
+//                                     |             |
+//                             inputListItem     submitListItemButton
 //                                                          |
 //                                                  submitListButtonIcon
 //

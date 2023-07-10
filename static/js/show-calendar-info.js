@@ -8,10 +8,26 @@ let defaultSchedules = [];
 let otherParentDefaultSchedules = [];
 let holidayDict = {};
 
-// document.getElementById('add-to-calendar').style.display = 'none';
-// document.getElementById('add-to-calendarContent').style.display = 'none';
-// document.getElementById('schedule-add-to-calendar').style.display = 'none';
-// document.getElementById('schedule-add-to-calendarContent').style.display = 'none';
+const alertHolder = document.getElementById('alert-holder')
+
+function createAlertDisplay(success, message='') {
+  if (document.getElementById('alert-display')) {
+      document.getElementById('alert-display').remove();
+  }
+  const alertDisplay = document.createElement('div');
+  if (success === true) {
+      alertDisplay.setAttribute('class', 'alert alert-success alert-dismissable fade show');
+  } else {
+      alertDisplay.setAttribute('class', 'alert alert-warning alert-dismissable fade show');
+  }
+  alertDisplay.setAttribute('role', 'alert');
+  alertDisplay.setAttribute('id', 'alert-display');
+
+  alertDisplay.innerHTML = message
+
+  alertHolder.appendChild(alertDisplay);
+}
+
 
 const parentingScheduleColumn = document.getElementById('parenting-schedule-column')
 parentingScheduleColumn.style.display = 'none';
@@ -296,6 +312,7 @@ fetch('/api/sampledata')
                     info.end = responseJson['new_end'];
                   }
                   $('#calendar').fullCalendar('updateEvent', info);
+                  createAlertDisplay(responseJson.success, responseJson.message);
                   // location.reload();
                 } else {
                   getErrorMessage(responseJson);
@@ -335,8 +352,10 @@ fetch('/api/sampledata')
                   $('#eventModal').modal('hide');
                   // 'removeEvents'[info._id, idOrFilter];
                   $('#calendar').fullCalendar('removeEvents', info._id);
+                  createAlertDisplay(responseJson.success, responseJson.message);
                 } else {
                     getErrorMessage(responseJson);
+                    // createAlertDisplay(responseJson.success, responseJson.message);
                   }
                 })
             }

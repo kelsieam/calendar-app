@@ -441,6 +441,7 @@ def create_change_default_schedule():
         current_username = session['username']
         current_user = User.query.filter_by(username=current_username).first()
         user_id = current_user.user_id
+        family_id = current_user.family_id
         
         start = request.form.get('default-schedule-start')
         start = datetime.strptime(start, '%Y-%m-%d')
@@ -455,6 +456,16 @@ def create_change_default_schedule():
             .order_by(DefaultSchedule.start.desc())\
             .all()
         
+        if not all_schedules:
+            # all_schedules = DefaultSchedule.query\
+            # .filter_by(family_id=family_id)\
+            # .order_by(DefaultSchedule.start.desc())\
+            # .all()
+            all_schedules = db.session.query(DefaultSchedule).join(User).filter(User.family_id == family_id).all()
+        
+# query = session.query(DefaultSchedule).join(User).filter(User.family_id == family_id)
+        print(all_schedules)
+
         def get_schedule_end(all_schedules):
             for schedule in all_schedules:
                 if schedule.start >= start:
@@ -463,6 +474,7 @@ def create_change_default_schedule():
                     return schedule
                 
         schedule_to_end = get_schedule_end(all_schedules)
+        print('schedule_to_end', schedule_to_end)
         schedule_to_end.end = start
 
         def get_schedule_for_end(all_schedules):
@@ -656,7 +668,6 @@ def create_new_message(submit_time):
         content = request.form.get('inputMessage')
         print(content)
         submit_time = int(submit_time)
-        # print('632****************', submit_time)
         new_message = create_message(content, user_id, submit_time)
 
         db.session.add(new_message)
@@ -697,7 +708,6 @@ def create_new_file():
             # file.save(f'/static/uploads/{filename}')
             # return redirect(f'/static/uploads/{filename}')
             new_file = create_file(f'/static/uploads/{filename}', title, comment, user_id)
-            print(new_file)
 
             db.session.add(new_file)
             db.session.commit()

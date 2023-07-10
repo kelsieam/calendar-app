@@ -68,6 +68,50 @@
   margin-left: auto;
   }
 
+  .form-control:focus {
+    box-shadow: none; 
+    -webkit-box-shadow: none;
+  }
+
+  .messages:focus {
+    border-color: #0DCAF0;
+    box-shadow: none; 
+    -webkit-box-shadow: none;
+  } 
+
+  .lists:focus {
+    border-color: #198754;
+    box-shadow: none; 
+    -webkit-box-shadow: none;
+  } 
+
+  .files:focus {
+    border-color: #ffc107;
+    box-shadow: none; 
+    -webkit-box-shadow: none;
+  }
+
+  .has-error .form-control:focus {
+    box-shadow: none; 
+    -webkit-box-shadow: none;
+  }
+
+  .accordion-button:not(.collapsed) {
+    color: black;
+    background-color: #d2ebd2;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+  }
+
+  .accordion-button .active {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+  }
+
+  .accordion-button:focus {
+    border-color:#d2ebd2;
+    box-shadow: none;
+  }
   /* style="border: 3px; border-color: #119da4" */
 </style>
 
@@ -106,7 +150,7 @@
             <br>
             <form action="/create-list" method="POST" id="new-list">
               <div class="input-group">
-                <input type="text" placeholder="List name" aria-label="list name" class="form-control" name="list-title" id="list-title">
+                <input type="text" placeholder="List name" aria-label="list name" class="form-control lists" name="list-title" id="list-title">
                 <button class="btn btn-outline-success" type="submit" id="list-create-button"><i class="fa-solid fa-plus"></i></button>
               </div>
             </form>
@@ -127,7 +171,7 @@
               <form action="/create-file" method="POST" id="new-upload" enctype="multipart/form-data">
                 <div class="form-group-row">    
                   <div class="input-group">
-                    <input type="text" placeholder="File name" aria-label="file name" class="form-control" name="file-title" id="file-title">
+                    <input type="text" placeholder="File name" aria-label="file name" class="form-control files" name="file-title" id="file-title">
                     <button class="btn btn-outline-warning" type="button" id="file-uploader"><i class="fa-solid fa-cloud-arrow-up"></i></button>
                   </div>
                 </div>
@@ -156,7 +200,7 @@
               </div>
               <form action="/create-message" id="new-message" method="POST">
                 <div class="input-group" style="padding-top: 10px;">
-                  <input type="text" aria-label="message content" class="form-control" name="inputMessage" id="inputMessage">
+                  <input type="text" aria-label="message content" class="form-control messages" name="inputMessage" id="inputMessage">
                   <button class="btn btn-outline-info" type="submit" id="new-message-submit"><i class="fa-regular fa-paper-plane"></i></button>
                 </div>
               </form>         

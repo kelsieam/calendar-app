@@ -54,7 +54,9 @@ messages = [
     crud.create_message("nevermind I found it", 13, 1687677950),
     crud.create_message("Can you bring their water bottles on Saturday? What time are you going to be there?", 11, 1688080000),
     crud.create_message("mom will you get stuff for smores I want some when I get back to your house", 14, 1688083595),
-    crud.create_message("Planning to be there at 10, do you need me to bring anything else?", 12, 1688083900)
+    crud.create_message("Planning to be there at 10, do you need me to bring anything else?", 12, 1688083900),
+    crud.create_message("Do you want to come along with us for the 4th? The girls really want you to", 12, 1688410806),
+    crud.create_message("I wish I could! Can they call me while you guys are there?", 11, 1688411300)
 ]
 
 model.db.session.add_all(messages)
