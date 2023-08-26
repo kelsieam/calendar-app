@@ -4,7 +4,7 @@ from flask import (Flask, render_template, request, flash, session, redirect, ur
 from model import connect_to_db, db
 from flask_sqlalchemy import SQLAlchemy
 from crud import create_event, create_def_sched, create_holiday, create_user, create_family, get_calendar_event_by_id, get_calendar_holiday_by_id, create_list, create_list_element, create_file, create_message, get_db_list_by_id, get_db_list_element_by_id, get_db_file_by_id, get_db_message_by_id
-from model import Event, Holiday, DefaultSchedule, User, Family, List, ListElement, File, Message, db
+from model import Event, Holiday, DefaultSchedule, User, Family, List, ListElement, File, Message
 from werkzeug.utils import secure_filename
 import psycopg2
 # import openai
@@ -129,13 +129,13 @@ def signup():
     if existing_user:
         flash('Username already exists')
         return render_template('login.html')
-    else:
-        user = create_user(username, password, name, family_id, is_child)
-        db.session.add(user)
-        db.session.commit()
-        session['username'] = username
-        flash('Account created successfully')
-        return redirect('/inputinfo')
+    
+    user = create_user(username, password, name, family_id, is_child)
+    db.session.add(user)
+    db.session.commit()
+    session['username'] = username
+    flash('Account created successfully')
+    return redirect('/inputinfo')
 
 
 # @app.route('/calendar')
@@ -218,6 +218,10 @@ def cannot_change_things():
     return {'success': False, 'message': 'You cannot edit or delete events in a child profile'}
 
 
+@app.route('/events')
+def get_events(user_id):
+    return Event.query.filter_by(user_id=user_id).as_dict()
+
 @app.route('/event/<id>')
 def get_calendar_event_by_id_for_json(id):
     return Event.query.filter_by(event_id=id).first().as_dict()
@@ -228,6 +232,7 @@ def get_calendar_holiday_by_id_for_json(id):
     return Holiday.query.filter_by(holiday_id=id).first().as_dict()
 
 
+# @app.route('/events/<id>', methods=['DELETE'])
 @app.route('/delete-event/<int:id>', methods=['DELETE'])
 def delete_calendar_event(id):
     # print(f'{id} *******************************')
@@ -850,4 +855,6 @@ def delete_list_element(id):
 
 if __name__ == "__main__":
     connect_to_db(app)
-    app.run(host="0.0.0.0", debug=True)
+    # app.run(host="0.0.0.0", debug=True)
+    app.run()
+    
